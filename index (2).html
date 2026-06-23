@@ -1,0 +1,4267 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MecaPlan - Organizador y Simulador de Horarios | Ingeniería Mecatrónica</title>
+  
+  <!-- Google Fonts - Outfit & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* ----------------------------------------------------
+       VANILLA CSS - DESIGN SYSTEM (DARK MODE GLASSMORPHISM)
+       ---------------------------------------------------- */
+    :root {
+      --bg-main: #0b0f19;
+      --bg-panel: rgba(17, 24, 39, 0.7);
+      --bg-panel-solid: #111827;
+      --bg-card: rgba(30, 41, 59, 0.45);
+      --bg-card-hover: rgba(51, 65, 85, 0.6);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-color-active: rgba(99, 102, 241, 0.4);
+      
+      --text-primary: #f3f4f6;
+      --text-secondary: #9ca3af;
+      --text-muted: #6b7280;
+      
+      --accent: #6366f1;
+      --accent-hover: #4f46e5;
+      --accent-glow: rgba(99, 102, 241, 0.15);
+      
+      --success: #10b981;
+      --success-glow: rgba(16, 185, 129, 0.15);
+      --warning: #f59e0b;
+      --warning-glow: rgba(245, 158, 11, 0.15);
+      --danger: #ef4444;
+      --danger-glow: rgba(239, 68, 68, 0.15);
+      --info: #06b6d4;
+      --info-glow: rgba(6, 182, 212, 0.15);
+      
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.15);
+      --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.3);
+      --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.5);
+      
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+      
+      --transition-fast: 0.15s ease;
+      --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-primary);
+      overflow-x: hidden;
+      min-height: 100vh;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 85% 75%, rgba(6, 182, 212, 0.06) 0%, transparent 40%);
+      background-attachment: fixed;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    /* Scrollbar Styling */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.3);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(156, 163, 175, 0.25);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(156, 163, 175, 0.45);
+    }
+
+    /* ----------------------------------------------------
+       LAYOUT STRUCTURE
+       ---------------------------------------------------- */
+    .app-wrapper {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      max-height: 100vh;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 30px;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      z-index: 10;
+      flex-shrink: 0;
+    }
+
+    .brand-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--info) 100%);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+    }
+
+    .brand-logo svg {
+      width: 24px;
+      height: 24px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+    }
+
+    .brand-text h1 {
+      font-size: 22px;
+      background: linear-gradient(135deg, #a78bfa 0%, #3b82f6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-text p {
+      font-size: 11px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-top: 1px;
+    }
+
+    .quick-stats-bar {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .stat-badge {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+
+    .stat-badge .label {
+      font-size: 11px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .stat-badge .value {
+      font-size: 18px;
+      font-weight: 700;
+      font-family: 'Outfit', sans-serif;
+      color: var(--text-primary);
+    }
+
+    .stat-badge .value.highlight {
+      color: #a78bfa;
+    }
+
+    /* Main Container */
+    .main-container {
+      display: grid;
+      grid-template-columns: 360px 1fr 340px;
+      flex-grow: 1;
+      overflow: hidden;
+      background: rgba(10, 15, 30, 0.2);
+    }
+
+    /* Panel Base Styles */
+    .panel {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow: hidden;
+      border-right: 1px solid var(--border-color);
+      background: var(--bg-panel);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    .panel-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .panel-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .panel-title {
+      font-size: 16px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-primary);
+    }
+
+    .panel-content {
+      flex-grow: 1;
+      overflow-y: auto;
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* ----------------------------------------------------
+       LEFT PANEL: SUBJECT SELECTION
+       ---------------------------------------------------- */
+    .search-wrapper {
+      position: relative;
+    }
+
+    .search-wrapper svg {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 18px;
+      height: 18px;
+      color: var(--text-secondary);
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 10px 12px 10px 38px;
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-size: 14px;
+      transition: all var(--transition-fast);
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+      background: rgba(15, 23, 42, 0.8);
+    }
+
+    .filter-options {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .select-dropdown {
+      flex-grow: 1;
+      padding: 8px 12px;
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-size: 13px;
+      outline: none;
+      cursor: pointer;
+      transition: border-color var(--transition-fast);
+    }
+
+    .select-dropdown:focus {
+      border-color: var(--accent);
+    }
+
+    /* Toggle Switches */
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: rgba(30, 41, 59, 0.25);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+    }
+
+    .toggle-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 36px;
+      height: 20px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(156, 163, 175, 0.3);
+      transition: .4s;
+      border-radius: 20px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 14px;
+      width: 14px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: var(--accent);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(16px);
+    }
+
+    /* Subject List UI */
+    .subject-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .subject-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      transition: all var(--transition-normal);
+    }
+
+    .subject-card:hover {
+      border-color: rgba(255, 255, 255, 0.15);
+      background: rgba(30, 41, 59, 0.55);
+    }
+
+    .subject-card.active {
+      border-color: var(--border-color-active);
+      box-shadow: 0 4px 20px rgba(99, 102, 241, 0.1);
+    }
+
+    .subject-card-header {
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .subject-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex-grow: 1;
+      padding-right: 12px;
+    }
+
+    .subject-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.4;
+    }
+
+    .subject-meta {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .badge {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 500;
+      text-transform: uppercase;
+    }
+
+    .badge-sem {
+      background: rgba(99, 102, 241, 0.15);
+      color: #a78bfa;
+      border: 1px solid rgba(99, 102, 241, 0.2);
+    }
+
+    .badge-cr {
+      background: rgba(6, 182, 212, 0.15);
+      color: #67e8f9;
+      border: 1px solid rgba(6, 182, 212, 0.2);
+    }
+
+    .badge-status {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .subject-arrow {
+      color: var(--text-secondary);
+      transition: transform var(--transition-normal);
+      flex-shrink: 0;
+    }
+
+    .subject-arrow svg {
+      width: 16px;
+      height: 16px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.5;
+    }
+
+    .subject-card.expanded .subject-arrow {
+      transform: rotate(180deg);
+    }
+
+    .subject-card-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height var(--transition-normal) ease-out;
+      background: rgba(15, 23, 42, 0.25);
+      border-top: 0 solid var(--border-color);
+    }
+
+    .subject-card.expanded .subject-card-body {
+      max-height: 500px;
+      border-top-width: 1px;
+    }
+
+    .groups-container {
+      padding: 12px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* Group card */
+    .group-card {
+      background: rgba(15, 23, 42, 0.4);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      position: relative;
+      transition: all var(--transition-fast);
+      cursor: pointer;
+    }
+
+    .group-card:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+      background: rgba(15, 23, 42, 0.6);
+      transform: translateY(-1px);
+    }
+
+    .group-card.selected {
+      border-color: var(--success);
+      background: rgba(16, 185, 129, 0.05);
+    }
+
+    .group-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .group-num {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .modalidad-tag {
+      font-size: 9px;
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+
+    .modalidad-tag.presencial {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+    .modalidad-tag.virtual {
+      background: rgba(14, 165, 233, 0.15);
+      color: #38bdf8;
+      border: 1px solid rgba(14, 165, 233, 0.2);
+    }
+    .modalidad-tag.mixto {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.2);
+    }
+    .modalidad-tag.mediada {
+      background: rgba(236, 72, 153, 0.15);
+      color: #f472b6;
+      border: 1px solid rgba(236, 72, 153, 0.2);
+    }
+
+    .group-schedule {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .schedule-item {
+      font-size: 11px;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .schedule-item svg {
+      width: 12px;
+      height: 12px;
+      flex-shrink: 0;
+    }
+
+    .group-btn {
+      width: 100%;
+      padding: 6px;
+      border-radius: 4px;
+      border: 1px solid var(--border-color);
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-primary);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: all var(--transition-fast);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .group-card:hover .group-btn {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .group-card.selected .group-btn {
+      background: var(--danger-glow);
+      color: #f87171;
+      border-color: rgba(239, 68, 68, 0.3);
+    }
+
+    .group-card.selected:hover .group-btn {
+      background: rgba(239, 68, 68, 0.25);
+    }
+
+    /* ----------------------------------------------------
+       CENTER PANEL: THE TIMETABLE GRID
+       ---------------------------------------------------- */
+    .timetable-panel {
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      background: rgba(10, 15, 30, 0.4);
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .timetable-header {
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(15, 23, 42, 0.4);
+      flex-shrink: 0;
+    }
+
+    .timetable-title {
+      font-size: 18px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .timetable-title svg {
+      width: 22px;
+      height: 22px;
+      color: var(--accent);
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+    }
+
+    .timetable-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-secondary {
+      padding: 8px 14px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all var(--transition-fast);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-danger {
+      padding: 8px 14px;
+      background: var(--danger-glow);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      border-radius: var(--radius-md);
+      color: #f87171;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all var(--transition-fast);
+    }
+
+    .btn-danger:hover {
+      background: rgba(239, 68, 68, 0.25);
+      border-color: rgba(239, 68, 68, 0.4);
+    }
+
+    /* Timetable Scroll Container */
+    .timetable-scroll-container {
+      flex-grow: 1;
+      overflow: auto;
+      padding: 20px;
+      position: relative;
+    }
+
+    /* Timetable Grid CSS */
+    .timetable-grid {
+      display: grid;
+      /* Time label column (80px), and 7 columns for Lunes..Domingo */
+      grid-template-columns: 80px repeat(7, minmax(110px, 1fr));
+      /* 1 Header row + 17 hour rows (05:00 to 22:00) */
+      grid-template-rows: 40px repeat(17, 50px);
+      gap: 1px;
+      background: rgba(255, 255, 255, 0.05); /* Lines color */
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      background-clip: padding-box;
+      min-width: 850px;
+      position: relative;
+    }
+
+    /* Grid Items */
+    .grid-cell {
+      background: #0d1321;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    /* Day Headers */
+    .grid-header {
+      background: rgba(17, 24, 39, 0.95);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      border-bottom: 2px solid var(--border-color);
+      user-select: none;
+    }
+
+    .grid-header.active-day {
+      color: var(--accent);
+    }
+
+    /* Time labels */
+    .grid-time-label {
+      background: rgba(17, 24, 39, 0.85);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      font-family: 'Outfit', sans-serif;
+      border-right: 1.5px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      padding-top: 4px;
+      align-items: center;
+      user-select: none;
+    }
+
+    /* Normal grid slot */
+    .grid-slot {
+      background: rgba(15, 23, 42, 0.4);
+    }
+
+    /* Class box on the calendar */
+    .class-block {
+      border-radius: var(--radius-sm);
+      padding: 6px 8px;
+      font-size: 10.5px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 4px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+      position: relative;
+      margin: 2px;
+      border: 1px solid transparent;
+      z-index: 2;
+    }
+
+    .class-block:hover {
+      transform: scale(1.02);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+      z-index: 4;
+    }
+
+    .class-block-title {
+      font-weight: 700;
+      line-height: 1.2;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .class-block-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 9px;
+      font-weight: 500;
+      opacity: 0.95;
+    }
+
+    .class-block-time {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+    }
+
+    .class-block-delete {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.4);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity var(--transition-fast), background var(--transition-fast);
+      border: none;
+    }
+
+    .class-block:hover .class-block-delete {
+      opacity: 1;
+    }
+
+    .class-block-delete:hover {
+      background: rgba(239, 68, 68, 0.85);
+    }
+
+    /* Class block states: preview vs enrolled */
+    .class-block.preview-ok {
+      border: 2.5px dashed var(--success);
+      background: rgba(16, 185, 129, 0.12) !important;
+      color: #34d399 !important;
+      opacity: 0.85;
+      animation: pulse-preview 1.5s infinite;
+      pointer-events: none;
+    }
+
+    .class-block.preview-conflict {
+      border: 2.5px dashed var(--danger);
+      background: rgba(239, 68, 68, 0.12) !important;
+      color: #f87171 !important;
+      opacity: 0.85;
+      animation: pulse-preview-danger 1.5s infinite;
+      pointer-events: none;
+    }
+
+    @keyframes pulse-preview {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.3); }
+      70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+    @keyframes pulse-preview-danger {
+      0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.3); }
+      70% { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+
+    /* Virtual classes bottom section */
+    .virtual-section {
+      padding: 16px 20px;
+      background: rgba(15, 23, 42, 0.35);
+      border-top: 1px solid var(--border-color);
+      flex-shrink: 0;
+    }
+
+    .virtual-section-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .virtual-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 12px;
+    }
+
+    .virtual-card {
+      background: rgba(30, 41, 59, 0.3);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all var(--transition-fast);
+    }
+
+    .virtual-card:hover {
+      border-color: rgba(255, 255, 255, 0.12);
+      background: rgba(30, 41, 59, 0.45);
+    }
+
+    .virtual-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .virtual-name {
+      font-size: 12.5px;
+      font-weight: 700;
+    }
+
+    .virtual-meta {
+      font-size: 10px;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .virtual-delete-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--transition-fast);
+    }
+
+    .virtual-delete-btn:hover {
+      color: #ef4444;
+      background: rgba(239, 68, 68, 0.1);
+    }
+
+    .virtual-delete-btn svg {
+      width: 16px;
+      height: 16px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+    }
+
+    /* empty message */
+    .empty-message {
+      text-align: center;
+      padding: 30px;
+      color: var(--text-secondary);
+      font-size: 13px;
+      border: 1px dashed var(--border-color);
+      border-radius: var(--radius-md);
+      grid-column: 1 / -1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .empty-message svg {
+      width: 32px;
+      height: 32px;
+      color: var(--text-muted);
+      stroke-width: 1.5;
+    }
+
+    /* ----------------------------------------------------
+       RIGHT PANEL: CAREER PROGRESS & PENSUM
+       ---------------------------------------------------- */
+    .progress-panel {
+      border-right: none;
+      background: rgba(17, 24, 39, 0.6);
+    }
+
+    .progress-card {
+      background: rgba(15, 23, 42, 0.45);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .progress-card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Linear Multi-Segment Progress Bar */
+    .multi-progress-container {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .progress-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .progress-bar-track {
+      height: 10px;
+      width: 100%;
+      background: rgba(156, 163, 175, 0.1);
+      border-radius: 5px;
+      overflow: hidden;
+      display: flex;
+    }
+
+    .progress-segment {
+      height: 100%;
+      transition: width var(--transition-normal);
+    }
+
+    .progress-segment.passed {
+      background: var(--success);
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+    }
+
+    .progress-segment.enrolled {
+      background: var(--accent);
+      box-shadow: 0 0 10px rgba(99, 102, 241, 0.4);
+    }
+
+    /* Progress Breakdown */
+    .progress-breakdown {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .breakdown-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 8px;
+      background: rgba(30, 41, 59, 0.25);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+    }
+
+    .breakdown-num {
+      font-size: 14px;
+      font-weight: 700;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .breakdown-num.passed { color: var(--success); }
+    .breakdown-num.enrolled { color: var(--accent); }
+    .breakdown-num.remaining { color: var(--text-secondary); }
+
+    .breakdown-lbl {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* Modality Stats List */
+    .modality-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .modality-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 10px;
+      background: rgba(15, 23, 42, 0.2);
+      border-radius: var(--radius-sm);
+      font-size: 11px;
+    }
+
+    .modality-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .modality-color {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    /* Pensum Checklist Container */
+    .pensum-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex-grow: 1;
+      overflow-y: auto;
+    }
+
+    .pensum-header {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 6px;
+    }
+
+    .pensum-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      overflow-y: auto;
+    }
+
+    .pensum-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 10px;
+      background: rgba(30, 41, 59, 0.2);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      transition: all var(--transition-fast);
+      user-select: none;
+    }
+
+    .pensum-item:hover {
+      background: rgba(30, 41, 59, 0.35);
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+
+    .pensum-item.approved {
+      border-color: rgba(16, 185, 129, 0.25);
+      background: rgba(16, 185, 129, 0.05);
+    }
+
+    .pensum-item-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-grow: 1;
+      min-width: 0;
+    }
+
+    .pensum-checkbox {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      border: 1.5px solid var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--transition-fast);
+      flex-shrink: 0;
+    }
+
+    .pensum-item.approved .pensum-checkbox {
+      border-color: var(--success);
+      background: var(--success);
+      color: white;
+    }
+
+    .pensum-checkbox svg {
+      width: 10px;
+      height: 10px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 3;
+      display: none;
+    }
+
+    .pensum-item.approved .pensum-checkbox svg {
+      display: block;
+    }
+
+    .pensum-name-container {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .pensum-name {
+      font-size: 11.5px;
+      font-weight: 500;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .pensum-item.approved .pensum-name {
+      color: var(--text-secondary);
+      text-decoration: line-through;
+    }
+
+    .pensum-sub {
+      font-size: 9px;
+      color: var(--text-muted);
+      margin-top: 1px;
+    }
+
+    .pensum-credits-badge {
+      font-size: 9px;
+      padding: 1px 4px;
+      background: rgba(156, 163, 175, 0.15);
+      border: 1px solid rgba(156, 163, 175, 0.2);
+      border-radius: 3px;
+      color: var(--text-secondary);
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .pensum-item.approved .pensum-credits-badge {
+      background: rgba(16, 185, 129, 0.15);
+      border-color: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+    }
+
+    /* ----------------------------------------------------
+       OVERLAY MODALS & DIALOGS
+       ---------------------------------------------------- */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(10, 15, 30, 0.7);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--transition-normal);
+      z-index: 100;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-container {
+      background: #111827;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      width: 90%;
+      max-width: 500px;
+      box-shadow: var(--shadow-lg);
+      transform: translateY(20px);
+      transition: transform var(--transition-normal);
+      overflow: hidden;
+    }
+
+    .modal-overlay.active .modal-container {
+      transform: translateY(0);
+    }
+
+    .modal-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .modal-header h3 {
+      font-size: 16px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .modal-close {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+      border-radius: 6px;
+      transition: all var(--transition-fast);
+    }
+
+    .modal-close:hover {
+      color: white;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .modal-close svg {
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+    }
+
+    .modal-body {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .conflict-alert {
+      display: flex;
+      gap: 14px;
+      padding: 16px;
+      background: var(--danger-glow);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      border-radius: var(--radius-md);
+      color: #f87171;
+    }
+
+    .conflict-icon {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+    }
+
+    .conflict-icon svg {
+      width: 14px;
+      height: 14px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.5;
+    }
+
+    .conflict-text-container {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .conflict-text-title {
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .conflict-text-desc {
+      font-size: 12.5px;
+      line-height: 1.4;
+      color: #fca5a5;
+    }
+
+    .conflict-details-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .conflict-details-item {
+      padding: 10px 14px;
+      background: rgba(30, 41, 59, 0.35);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .conflict-subject-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .conflict-subject-meta {
+      font-size: 11px;
+      color: var(--text-secondary);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .btn-primary {
+      padding: 8px 18px;
+      background: var(--accent);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      border-radius: var(--radius-md);
+      color: white;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+    }
+
+    .btn-primary-danger {
+      padding: 8px 18px;
+      background: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      border-radius: var(--radius-md);
+      color: white;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .btn-primary-danger:hover {
+      background: #dc2626;
+      box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+    }
+
+    /* Notification Toast */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 200;
+      pointer-events: none;
+    }
+
+    .toast {
+      padding: 12px 18px;
+      background: #1f2937;
+      border-left: 4px solid var(--accent);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      color: var(--text-primary);
+      font-size: 13.5px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transform: translateX(120%);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      pointer-events: auto;
+      min-width: 250px;
+      max-width: 400px;
+    }
+
+    .toast.active {
+      transform: translateX(0);
+    }
+
+    .toast.success { border-left-color: var(--success); }
+    .toast.warning { border-left-color: var(--warning); }
+    .toast.error { border-left-color: var(--danger); }
+
+    .toast svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    .toast.success svg { color: var(--success); }
+    .toast.warning svg { color: var(--warning); }
+    .toast.error svg { color: var(--danger); }
+
+    /* ----------------------------------------------------
+       RESPONSIVE & MOBILE OVERLAYS
+       ---------------------------------------------------- */
+    @media (max-width: 1400px) {
+      .main-container {
+        grid-template-columns: 320px 1fr;
+      }
+      .progress-panel {
+        grid-column: span 2;
+        height: auto;
+        border-top: 1px solid var(--border-color);
+        max-height: 450px;
+      }
+      .progress-panel .panel-content {
+        flex-direction: row;
+        gap: 20px;
+      }
+      .progress-card {
+        flex: 1;
+        height: 100%;
+        justify-content: center;
+      }
+      .pensum-container {
+        flex: 1.5;
+        height: 100%;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      .main-container {
+        grid-template-columns: 1fr;
+        overflow-y: auto;
+      }
+      .panel {
+        height: auto;
+        max-height: none;
+      }
+      .timetable-panel {
+        order: -1;
+        height: 600px;
+      }
+      .timetable-scroll-container {
+        overflow: auto;
+      }
+      .progress-panel {
+        grid-column: span 1;
+        max-height: none;
+      }
+      .progress-panel .panel-content {
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 600px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 12px 20px;
+      }
+      .quick-stats-bar {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .timetable-panel {
+        height: 500px;
+      }
+      .modal-container {
+        width: 95%;
+      }
+    }
+
+    /* Style updates for Manage Subjects Modal and Print Layout */
+    .group-edit-card {
+      background: rgba(15, 23, 42, 0.5) !important;
+      border: 1px solid var(--border-color) !important;
+      border-radius: var(--radius-md) !important;
+      padding: 14px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 10px !important;
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .group-slots-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    #print-subjects-list-container {
+      display: none;
+    }
+
+    @media print {
+      @page {
+        size: letter landscape;
+        margin: 1cm;
+      }
+      
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        min-height: auto !important;
+        background-image: none !important;
+      }
+      
+      .app-wrapper {
+        height: auto !important;
+        max-height: none !important;
+        display: block !important;
+      }
+      
+      header, 
+      .main-container > .panel:not(.timetable-panel), 
+      #diagnostic-banner,
+      .timetable-header,
+      .virtual-section,
+      .timetable-actions,
+      #diag-storage,
+      button,
+      .class-block-delete,
+      .toast-container,
+      .modal-overlay {
+        display: none !important;
+      }
+      
+      .main-container {
+        display: block !important;
+        background: none !important;
+        height: auto !important;
+        max-height: none !important;
+        width: 100% !important;
+        border: none !important;
+      }
+      
+      .timetable-panel {
+        border: none !important;
+        background: none !important;
+        width: 100% !important;
+        height: auto !important;
+        overflow: visible !important;
+        display: block !important;
+      }
+      
+      .timetable-scroll-container {
+        padding: 0 !important;
+        overflow: visible !important;
+        height: auto !important;
+        max-height: none !important;
+      }
+      
+      .timetable-grid {
+        display: grid !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        border: 1.5px solid #000000 !important;
+        background: #dddddd !important; /* Lines color */
+        border-radius: var(--radius-md) !important;
+        page-break-inside: avoid;
+        grid-template-columns: 70px repeat(7, 1fr) !important;
+        grid-template-rows: 32px repeat(17, 30px) !important;
+      }
+      
+      .grid-cell {
+        background: #ffffff !important;
+        color: #111111 !important;
+        border: none !important;
+      }
+      
+      .grid-header {
+        background: #f3f4f6 !important;
+        color: #111827 !important;
+        font-size: 10px !important;
+        border-bottom: 1.5px solid #000000 !important;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      .grid-time-label {
+        background: #f9fafb !important;
+        color: #374151 !important;
+        font-size: 9px !important;
+        border-right: 1.5px solid #000000 !important;
+        padding-top: 2px !important;
+      }
+      
+      .grid-time-label span {
+        font-size: 9px !important;
+      }
+      
+      .class-block {
+        margin: 1px !important;
+        border: 1.5px solid #000000 !important;
+        box-shadow: none !important;
+        border-radius: 4px !important;
+        padding: 4px 6px !important;
+        z-index: 2 !important;
+        print-color-adjust: exact !important;
+        -webkit-print-color-adjust: exact !important;
+        background-color: #f3f4f6 !important;
+        color: #000000 !important;
+      }
+      
+      .class-block-title {
+        font-size: 9.5px !important;
+        font-weight: bold !important;
+        color: #000000 !important;
+      }
+      
+      .class-block-meta {
+        font-size: 8px !important;
+        color: #333333 !important;
+      }
+      
+      .class-block-time {
+        font-size: 8px !important;
+        color: #000000 !important;
+        font-weight: bold !important;
+      }
+      
+      .modalidad-tag {
+        border: 1px solid #444 !important;
+        color: #000000 !important;
+        background: #e5e7eb !important;
+        font-size: 7px !important;
+        padding: 0px 2px !important;
+      }
+
+      #print-subjects-list-container {
+        display: block !important;
+        margin-top: 30px;
+        page-break-before: auto;
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.75; transform: scale(0.97); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Panel de Diagnóstico -->
+  <div id="diagnostic-banner" style="display:none; position:fixed; top:0; left:0; right:0; background:#ef4444; color:white; padding:15px 20px; z-index:99999; font-family:monospace; font-size:13px; line-height:1.5; box-shadow:0 4px 15px rgba(0,0,0,0.5);">
+    <div style="font-weight:bold; font-size:15px; margin-bottom:5px; display:flex; align-items:center; gap:8px;">
+      <span>⚠️ Error en la Aplicación (MecaPlan)</span>
+      <button style="margin-left:auto; background:rgba(255,255,255,0.2); border:none; color:white; padding:3px 8px; border-radius:4px; cursor:pointer;" onclick="document.getElementById('diagnostic-banner').style.display='none'">Cerrar</button>
+    </div>
+    <div id="diagnostic-msg"></div>
+  </div>
+
+  <script>
+    // Atrapador de Errores Visuales - corre primero para capturar cualquier error de sintaxis o ejecución de bloques posteriores
+    window.addEventListener('error', function(event) {
+      const banner = document.getElementById("diagnostic-banner");
+      const msg = document.getElementById("diagnostic-msg");
+      if (banner && msg) {
+        msg.innerHTML = `
+          <strong>Mensaje:</strong> ${event.message}<br>
+          <strong>Archivo:</strong> ${event.filename}<br>
+          <strong>Línea:</strong> ${event.lineno}:${event.colno}<br>
+          <strong>Detalles:</strong> ${event.error ? event.error.stack : 'No disponible'}
+        `;
+        banner.style.backgroundColor = "#ef4444";
+        banner.style.display = "block";
+      } else {
+        alert("Error detectado: " + event.message + " en " + event.filename + ":" + event.lineno);
+      }
+    });
+
+    window.addEventListener('unhandledrejection', function(event) {
+      const banner = document.getElementById("diagnostic-banner");
+      const msg = document.getElementById("diagnostic-msg");
+      if (banner && msg) {
+        msg.innerHTML = `
+          <strong>Promesa rechazada sin manejar:</strong> ${event.reason}
+        `;
+        banner.style.backgroundColor = "#d97706";
+        banner.style.display = "block";
+      }
+    });
+  </script>
+
+  <div class="app-wrapper">
+    <!-- Header -->
+    <header>
+      <div class="brand-container">
+        <div class="brand-logo">
+          <!-- Mechatronics themed logo: Gear with microchip paths inside -->
+          <svg viewBox="0 0 24 24">
+            <path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1>MecaPlan</h1>
+          <p>Ingeniería Mecatrónica | Organizador</p>
+        </div>
+      </div>
+      
+      <!-- Quick Statistics Header -->
+      <div class="quick-stats-bar">
+        <div class="stat-badge">
+          <span class="label">Créditos Inscritos</span>
+          <span class="value" id="header-credits-enrolled">0 cr</span>
+        </div>
+        <div class="stat-badge">
+          <span class="label">Progreso Carrera</span>
+          <span class="value highlight" id="header-progress-percent">0%</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Workspace Container -->
+    <div class="main-container">
+      
+      <!-- LEFT PANEL: SUBJECT SELECTION -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-header-row">
+            <h2 class="panel-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+              </svg>
+              Planificar Clases
+            </h2>
+            <button class="btn-secondary" id="btn-manage-subjects" style="padding: 4px 8px; font-size: 11px; display: flex; align-items: center; gap: 4px;" title="Agregar, modificar o eliminar materias y horarios">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color:var(--accent)">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              Gestionar
+            </button>
+            <!-- Cloud Sync Status Indicator -->
+            <div id="sync-status-pill" title="Estado de sincronización en la nube" style="display:flex;align-items:center;gap:5px;padding:3px 8px;border-radius:20px;font-size:10px;font-weight:600;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.25);color:#10b981;transition:all 0.4s ease;cursor:default;white-space:nowrap;">
+              <span id="sync-status-icon" style="font-size:11px;">☁️</span>
+              <span id="sync-status-text">Sincronizado</span>
+            </div>
+          </div>
+          
+          <!-- Filters -->
+          <div class="search-wrapper">
+            <svg viewBox="0 0 24 24">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="search-bar" class="search-input" placeholder="Buscar materia o código...">
+          </div>
+          
+          <div class="filter-options">
+            <select id="semester-select" class="select-dropdown">
+              <option value="Habilitadas">Materias Habilitadas</option>
+              <option value="All">Ver Oferta Completa</option>
+              <option value="1">Semestre 1</option>
+              <option value="2">Semestre 2</option>
+              <option value="3">Semestre 3</option>
+              <option value="4">Semestre 4</option>
+              <option value="5">Semestre 5</option>
+              <option value="6">Semestre 6</option>
+              <option value="7">Semestre 7</option>
+              <option value="8">Semestre 8</option>
+              <option value="9">Semestre 9</option>
+              <option value="10">Semestre 10</option>
+              <option value="Electiva">Electivas</option>
+            </select>
+          </div>
+
+          <div class="toggle-container">
+            <span class="toggle-label">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--success)">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                <polyline points="22 4 12 14.01 9 11.01"/>
+              </svg>
+              Filtrar por habilitadas
+            </span>
+            <label class="switch">
+              <input type="checkbox" id="toggle-habilitadas" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="panel-content">
+          <div class="subject-list" id="subject-list-container">
+            <!-- Dynamic Injection of Subjects -->
+          </div>
+          <!-- Card de Diagnóstico Interno -->
+          <div style="margin-top: 15px; padding: 12px; background: rgba(30, 41, 59, 0.4); border: 1px solid var(--border-color); border-radius: var(--radius-md); font-family: monospace; font-size: 11px; color: var(--text-secondary); display: flex; flex-direction: column; gap: 4px; flex-shrink: 0;">
+            <div style="font-weight: bold; color: var(--text-primary); margin-bottom: 4px; border-bottom: 1px solid var(--border-color); padding-bottom: 4px;">🔍 Estado Interno MecaPlan:</div>
+            <div>Clases CSV cargadas: <span id="diag-csv-rows" style="color: var(--info); font-weight: bold;">0</span></div>
+            <div>Materias Pénsum: <span id="diag-curr" style="color: var(--accent); font-weight: bold;">0</span></div>
+            <div>Materias Filtradas: <span id="diag-filtered" style="color: var(--warning); font-weight: bold;">0</span></div>
+            <div>Estado de Carga: <span id="diag-storage" style="color: var(--success); font-weight: bold;">Cargando...</span></div>
+            <button onclick="localStorage.clear(); location.reload();" style="margin-top: 8px; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); color: #f87171; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-family: sans-serif; font-size: 10px; font-weight: bold; text-transform: uppercase;">Restablecer Almacenamiento</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CENTER PANEL: TIMETABLE GRID -->
+      <div class="panel timetable-panel">
+        <div class="timetable-header">
+          <div class="timetable-title">
+            <svg viewBox="0 0 24 24">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+            Horario Semanal
+          </div>
+          <div class="timetable-actions">
+            <button class="btn-secondary" id="btn-export-image" title="Guardar horario como PDF">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              Guardar PDF
+            </button>
+            <button class="btn-danger" id="btn-clear-schedule">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+              </svg>
+              Limpiar Horario
+            </button>
+          </div>
+        </div>
+
+        <div class="timetable-scroll-container">
+          <div class="timetable-grid" id="timetable-grid-element">
+            <!-- Headers and Time Labels will be generated, and class blocks injected here -->
+          </div>
+        </div>
+
+        <!-- Virtual Subjects Bottom Container -->
+        <div class="virtual-section">
+          <div class="virtual-section-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--info)">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+            Asignaturas Virtuales y Asíncronas
+          </div>
+          <div class="virtual-grid" id="virtual-classes-container">
+            <!-- Dynamic injection of virtual courses -->
+            <div class="empty-message" id="virtual-empty-message">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="8" y1="12" x2="16" y2="12"></line>
+              </svg>
+              <span>No hay materias virtuales inscritas.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT PANEL: CAREER PROGRESS & PENSUM -->
+      <div class="panel progress-panel">
+        <div class="panel-header">
+          <h2 class="panel-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="20" x2="18" y2="10"></line>
+              <line x1="12" y1="20" x2="12" y2="4"></line>
+              <line x1="6" y1="20" x2="6" y2="14"></line>
+            </svg>
+            Progreso y Plan de Estudios
+          </h2>
+        </div>
+
+        <div class="panel-content">
+          <!-- Statistics Card -->
+          <div class="progress-card">
+            <div class="progress-card-title">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--accent)">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+              Créditos Totales
+            </div>
+            
+            <div class="multi-progress-container">
+              <div class="progress-labels">
+                <span id="progress-percent-label">0% Completado</span>
+                <span id="progress-credits-label">0 / 165 cr</span>
+              </div>
+              <div class="progress-bar-track">
+                <!-- Segment 1: Approved Credits -->
+                <div class="progress-segment passed" id="bar-passed" style="width: 0%"></div>
+                <!-- Segment 2: Simulated/Enrolled Credits -->
+                <div class="progress-segment enrolled" id="bar-enrolled" style="width: 0%"></div>
+              </div>
+            </div>
+
+            <div class="progress-breakdown">
+              <div class="breakdown-item">
+                <span class="breakdown-num passed" id="val-passed-credits">0</span>
+                <span class="breakdown-lbl">Aprobados</span>
+              </div>
+              <div class="breakdown-item">
+                <span class="breakdown-num enrolled" id="val-enrolled-credits">0</span>
+                <span class="breakdown-lbl">Inscritos</span>
+              </div>
+              <div class="breakdown-item">
+                <span class="breakdown-num remaining" id="val-remaining-credits">165</span>
+                <span class="breakdown-lbl">Restantes</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Modality Analysis -->
+          <div class="progress-card" style="gap: 8px;">
+            <div class="progress-card-title" style="margin-bottom: 4px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--info)">
+                <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
+                <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
+              </svg>
+              Distribución por Modalidad
+            </div>
+            <div class="modality-list" id="modality-stats-list">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- Pensum Checklist -->
+          <div class="pensum-container">
+            <div class="pensum-header">
+              <span>Marcar materias aprobadas</span>
+              <button class="btn-secondary" style="padding: 2px 6px; font-size: 9px; border-radius: 4px;" onclick="resetAllAproved()">Limpiar</button>
+            </div>
+            <div class="pensum-list" id="pensum-checklist-element">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CONFLICT MODAL OVERLAY -->
+  <div class="modal-overlay" id="conflict-modal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color:var(--danger)">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+            <line x1="12" y1="9" x2="12" y2="13"></line>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+          Conflicto de Horarios
+        </h3>
+        <button class="modal-close" onclick="closeConflictModal()">
+          <svg viewBox="0 0 24 24">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="conflict-alert">
+          <div class="conflict-icon">
+            <svg viewBox="0 0 24 24">
+              <line x1="12" y1="9" x2="12" y2="13"></line>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+          </div>
+          <div class="conflict-text-container">
+            <span class="conflict-text-title">¡Existe una superposición!</span>
+            <span class="conflict-text-desc" id="conflict-modal-desc">La clase seleccionada se cruza con asignaturas ya agregadas a tu horario.</span>
+          </div>
+        </div>
+        
+        <div>
+          <span style="font-size: 12px; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 8px;">Asignaturas en conflicto:</span>
+          <div class="conflict-details-list" id="conflict-details-container">
+            <!-- Dynamic conflict rows -->
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeConflictModal()">Volver atrás</button>
+        <button class="btn-primary-danger" id="btn-resolve-conflict">Reemplazar e inscribir</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MANAGE SUBJECTS MODAL OVERLAY -->
+  <div class="modal-overlay" id="manage-subjects-modal">
+    <div class="modal-container" style="max-width: 650px; width: 95%; max-height: 85vh; display: flex; flex-direction: column;">
+      <div class="modal-header">
+        <h3>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color:var(--accent)">
+            <path d="M12 20h9"></path>
+            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+          </svg>
+          Gestionar Asignaturas y Horarios
+        </h3>
+        <button class="modal-close" onclick="closeManageSubjectsModal()">
+          <svg viewBox="0 0 24 24">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      
+      <div class="modal-body" style="flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; padding: 20px;">
+        <!-- Action Row -->
+        <div style="display: flex; gap: 10px; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; flex-shrink: 0;">
+          <input type="text" id="manage-search-bar" class="search-input" placeholder="Buscar materia a editar..." style="max-width: 300px; padding-top: 8px; padding-bottom: 8px; margin: 0;">
+          <button class="btn-primary" onclick="showCreateSubjectForm()" style="display: flex; align-items: center; gap: 6px; padding: 8px 12px; font-size: 12px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Nueva Materia
+          </button>
+        </div>
+
+        <!-- Dynamic Form for Subject Creation / Edit (hidden by default) -->
+        <div id="subject-edit-form-container" style="display: none; background: rgba(30, 41, 59, 0.4); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px; flex-direction: column; gap: 12px; flex-shrink: 0;">
+          <h4 id="edit-form-title" style="font-size: 14px; color: var(--text-primary); border-bottom: 1px solid var(--border-color); padding-bottom: 6px; margin-bottom: 4px;">Editar Materia</h4>
+          
+          <input type="hidden" id="edit-subject-index">
+          <input type="hidden" id="edit-subject-original-name">
+
+          <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px;">
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              <label style="font-size: 11px; color: var(--text-secondary);">Nombre de la Materia</label>
+              <input type="text" id="edit-subject-name" class="search-input" style="padding: 6px 10px;" placeholder="Ej. Robótica 2">
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              <label style="font-size: 11px; color: var(--text-secondary);">Créditos</label>
+              <input type="number" id="edit-subject-credits" class="search-input" style="padding: 6px 10px;" min="1" max="10" placeholder="Ej. 3">
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              <label style="font-size: 11px; color: var(--text-secondary);">Semestre</label>
+              <select id="edit-subject-sem" class="select-dropdown" style="padding: 6px 10px; height: 38px;">
+                <option value="1">Semestre 1</option>
+                <option value="2">Semestre 2</option>
+                <option value="3">Semestre 3</option>
+                <option value="4">Semestre 4</option>
+                <option value="5">Semestre 5</option>
+                <option value="6">Semestre 6</option>
+                <option value="7">Semestre 7</option>
+                <option value="8">Semestre 8</option>
+                <option value="9">Semestre 9</option>
+                <option value="10">Semestre 10</option>
+                <option value="Electiva">Electiva</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Class Groups Section -->
+          <div style="margin-top: 10px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <span style="font-size: 12px; font-weight: 600; color: var(--text-primary);">Grupos y Horarios</span>
+              <button class="btn-secondary" onclick="addEditGroupRow()" style="padding: 3px 8px; font-size: 10px;">➕ Agregar Grupo</button>
+            </div>
+            
+            <div id="edit-groups-list" style="display: flex; flex-direction: column; gap: 10px; max-height: 200px; overflow-y: auto; padding-right: 4px;">
+              <!-- Dynamic Group Edit rows -->
+            </div>
+          </div>
+
+          <!-- Form Buttons -->
+          <div style="display: flex; justify-content: flex-end; gap: 8px; border-top: 1px solid var(--border-color); padding-top: 12px; margin-top: 8px;">
+            <button class="btn-secondary" onclick="cancelSubjectEdit()" style="padding: 6px 12px; font-size: 12px;">Cancelar</button>
+            <button class="btn-danger" id="btn-delete-subject" style="padding: 6px 12px; font-size: 12px; display: none;">Eliminar Materia</button>
+            <button class="btn-primary" onclick="saveSubjectFromForm()" style="padding: 6px 12px; font-size: 12px;">Guardar Cambios</button>
+          </div>
+        </div>
+
+        <!-- Subjects List Table -->
+        <div id="manage-subjects-list-container" style="flex-grow: 1; overflow-y: auto;">
+          <table style="width: 100%; border-collapse: collapse; font-size: 12px; color: var(--text-primary);">
+            <thead>
+              <tr style="text-align: left; border-bottom: 1.5px solid var(--border-color); color: var(--text-secondary);">
+                <th style="padding: 8px; font-weight: 600;">Materia</th>
+                <th style="padding: 8px; font-weight: 600; width: 60px;">Sem.</th>
+                <th style="padding: 8px; font-weight: 600; width: 60px;">Créd.</th>
+                <th style="padding: 8px; font-weight: 600; width: 100px;">Grupos</th>
+                <th style="padding: 8px; font-weight: 600; width: 80px; text-align: right;">Acción</th>
+              </tr>
+            </thead>
+            <tbody id="manage-subjects-tbody">
+              <!-- Dynamic content -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <div class="modal-footer" style="flex-shrink: 0;">
+        <button class="btn-secondary" onclick="closeManageSubjectsModal()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRINT ONLY CONTAINER FOR EXPORTED SCHEDULE LIST -->
+  <div id="print-subjects-list-container" class="print-only">
+    <h2 style="font-family: 'Outfit', sans-serif; font-size: 18px; margin-top: 25px; margin-bottom: 15px; border-bottom: 2px solid #000000; padding-bottom: 6px; color: #000000;">Detalle de Asignaturas Inscritas</h2>
+    <table style="width: 100%; border-collapse: collapse; font-family: 'Inter', sans-serif; font-size: 11px; margin-top: 10px;">
+      <thead>
+        <tr style="background-color: #f3f4f6; border: 1.5px solid #000000; text-align: left;">
+          <th style="padding: 8px; border: 1.5px solid #000000; font-weight: bold; color: #000000;">Asignatura</th>
+          <th style="padding: 8px; border: 1.5px solid #000000; font-weight: bold; color: #000000; width: 90px;">Código (Nº Clase)</th>
+          <th style="padding: 8px; border: 1.5px solid #000000; font-weight: bold; color: #000000; width: 100px;">Modalidad</th>
+          <th style="padding: 8px; border: 1.5px solid #000000; font-weight: bold; color: #000000;">Horario Correspondiente</th>
+          <th style="padding: 8px; border: 1.5px solid #000000; font-weight: bold; color: #000000; width: 70px; text-align: center;">Créditos</th>
+        </tr>
+      </thead>
+      <tbody id="print-subjects-tbody">
+        <!-- Enrolled subjects rows will be inserted here dynamically -->
+      </tbody>
+    </table>
+    <div style="margin-top: 15px; text-align: right; font-weight: bold; font-family: 'Outfit', sans-serif; font-size: 13px; color: #000000; border-top: 1.5px dashed #000000; padding-top: 10px;" id="print-total-credits">
+      Total Créditos Inscritos: 0 cr
+    </div>
+  </div>
+
+  <!-- TOAST CONTAINER FOR NOTIFICATIONS -->
+  <div class="toast-container" id="toast-container-element"></div>
+
+  <!-- JavaScript Logic -->
+  <script>
+    // CSV Database integration
+    const CSV_DATA = `Semestre,Curso,Nº Clase,Lun,Mar,Mie,Jue,Vie,Sab,Dom,Modalidad
+1,Precalculo,5723,,18..21,,15..17,,,,Mixto
+1,Precalculo,5724,,,10..13,09..11,,,,Mixto
+1,Diseño Y Modelado Asistido,5208,14..16 14..17,,,,,,,Presencial
+1,Diseño Y Modelado Asistido,5212,18..20,,,07..10,,,,Presencial
+1,Quimica General,5278,,11..13,10..13,,,,,Presencial
+1,Quimica General,5279,,,20..22,10..13,,,,Presencial
+1,Filosofia Uniagrarista,5172,,,,,01..03,,,Virtual
+1,Comunicacion,5187,,07..10,,,,,,Presencial
+2,Algebra Lineal,5635,10..13,,,,,,,Presencial
+2,Calculo Diferencial,5649,,,18..21,,,,,Presencial
+2,Calculo Diferencial,5651,,07..10,,,,,,Presencial
+2,Fisica Mecanica,5631,14..17,,14..16,,,,,Presencial
+2,Sostenibilidad Ambiental,5953,20..22,,,,,,,Presencial
+2,Humanismo Y Paz,5155,,,,,01..04,,,Virtual
+2,Ingles 1,6123,07..09,,07..09,,,,,Presencial
+3,Calculo Integral,5698,,,07..10,,,,,Presencial
+3,Probabilidad Y Estadistica,5936,,11..13,10..13,,,,,Presencial
+3,Algoritmos Y Programacion,5235,14..16,15..18,,,,,,Presencial
+3,Circuitos Electricos,5243,10..13,,,14..17,,,,Presencial
+3,Emprendimiento E Innovacion,5114,18..20,,,,,,,Presencial
+3,Ingles 2,6124,,,,,,00..04,,Virtual
+4,Ecuaciones Diferenciales,5714,18..21,,,,,,,Presencial
+4,Fisica Electrica Y Magnetica,5391,,,16..18,07..10,,,,Presencial
+4,Fisica Electrica Y Magnetica,5392,,,,18..20 07..10,,,,Presencial
+4,Electronica Analoga,5249,,10..13,,10..13,,,,Presencial
+4,Materiales Para Ingenieria,5247,16..18,,10..13,,,,,Presencial
+4,Desarrollo Regional- Ruralidad,5129,,,,,,07..09,,Virtual
+4,Introduc. A La Investigacion,5091,14..16,,,,,,,Presencial
+4,Historia Arte Y Cultura,5224,16..18,,,,,,,Presencial
+4,Ingles 3,6125,,,,,,,04..08,Virtual
+5,Calculo Vectorial,5704,,18..21,,,,,,Presencial
+5,Electronica Digital,5253,11..13,,10..13,,,,,Presencial
+5,Sensores Y Actuadores Industri,5255,15..18,15..18,,,,,,Presencial
+5,Mecanica De Fluidos,5176,,,10..12 13..16,,,,,Presencial
+5,Mecanica De Fluidos,5189,,,18..20,,10..13,,,Presencial
+5,Mecanica De Fluidos,6024,18..21,,,18..20,,,,Presencial
+5,Economia Para Ingenieros,6037,14..17,,,,,,,Presencial
+6,Termodinamica,6049,,20..22,18..21,,,,,Presencial
+6,Termodinamica,6050,,18..20,18..21,,,,,Presencial
+6,Termodinamica,6051,14..16,,14..17,,,,,Presencial
+6,Microprocesadores Y Sistemas,5257,08..11,,14..16,,,,,Presencial
+6,Sistemas Dinamicos,5264,,,,,,10..13,,Presencial
+6,Electro Neumatica,5259,,10..13,11..13,,,,,Presencial
+6,Estatica,5261,,,,,07..10,,,Presencial
+6,Metodolog. De La Investigacion,5096,,,14..16,,,,,Presencial
+7,Program. Orientada A Objetos,5287,,,,,18..21 10..13,,,Presencial
+7,Señales Y Sistemas,5285,,16..18,15..18,,,,,Presencial
+7,Señales Y Sistemas,5286,18..20,18..21,,,,,,Presencial
+7,Resistencia De Materiales,5271,16..18,,,16..18,,,,Presencial
+7,Resistencia De Materiales,5288,,,,,14..16 20..22,,,Presencial
+7,Seminario De Investigacion,5100,,,,,14..16,,,Presencial
+7,Seminario De Investigacion,5101,,,,,18..20,,,Presencial
+7,Form. Y Evaluacion De Proyecto,5199,,18..21,,20..22,,,,Presencial
+7,Form. Y Evaluacion De Proyecto,5598,,09..11,,10..13,,,,Presencial
+7,Form. Y Evaluacion De Proyecto,5604,20..22,,,07..10,,,,Presencial
+8,Sistemas Inteligentes Int. Art,5292,,18..20,,14..17,,,,Presencial
+8,Maquinas Electricas,5289,10..13,,14..16,,,,,Presencial
+8,Sistemas De Control Analogo,5291,20..22,,,18..21,,,,Presencial
+8,Procesos De Manufactura,5293,,,,,07..10 18..20,,,Presencial
+8,Dinamica,5294,,,,,10..13,,,Presencial
+9,Sistemas De Control Digital,5297,,,,,16..18 10..13,,,Presencial
+9,Sistemas De Control Digital,5298,,,,,07..10 20..22,,,Presencial
+9,Automatiz. Procesos De Manufac,5296,,20..22,,18..21,,,,Presencial
+9,Diseño De Maquinas,5295,18..20,,18..21,,,,,Presencial
+10,Robotica Aplicada,5303,,18..21,,18..20,,,,Presencial
+10,Diseño Mecatronico,5301,18..20,,18..21,,,,,Presencial
+10,Opcion De Grado,5882,05..07,05..07,,,,,,Mediada
+10,Opcion De Grado,6057,,16..18,,06..09 08..11,,,,Mixto
+Electiva,Agricultura De Precision 1,5302,,,,,07..10,,,Presencial
+Electiva,Energias Alternativas 2,5299,,,,,10..13,,,Presencial
+Electiva,Nanobiotecnologia 1,5304,,,,,14..17,,,Presencial
+Electiva,Telecomunicaciones 2,5300,,,,,14..17,,,Presencial
+Electiva,Voleibol,6010,14..16,,,,,,,Presencial
+Electiva,Baloncesto,6006,16..18,,,,,,,Presencial
+Electiva,Rugby,6018,14..16,,,,,,,Presencial
+Electiva,Diseño Podcast Y Contenido Int,6012,18..20,,,,,,,Mediada
+Electiva,Fotografia,6156,,,16..18,,,,,Mediada
+Electiva,Habilidades Informaticas Ing.,5240,,,16..18,,,,,Presencial
+Electiva,Energias Renovables,5083,,,10..12,,,,,Presencial
+Electiva,Minas Y Energia,5245,20..22,,,,,,,Presencial
+Electiva,Contabilidad Gerencial,5873,20..22,,,,,,,Presencial
+Electiva,Cine Y Politica,5183,,,01..03,,,,,Virtual
+Electiva,Ecoturismo,5192,,,15..17,,,,,Virtual
+Electiva,Finanzas Personales Y Proyecto,5871,18..20,,,,,,,Presencial
+Electiva,Futbol,6004,,14..16,,,,,,Presencial
+Electiva,Power Skills: Habilidades Para,5305,18..20,,,,,,,Presencial
+Electiva,Inteligencia Emocional,6147,,,18..20,,,,,Presencial`;
+
+    // Curriculum details - mapping names and credits for the 165 credits program
+    const CURRICULUM = [
+      // Semester 1
+      { name: "Precalculo", credits: 4, sem: 1 },
+      { name: "Diseño Y Modelado Asistido", credits: 3, sem: 1 },
+      { name: "Quimica General", credits: 4, sem: 1 },
+      { name: "Filosofia Uniagrarista", credits: 2, sem: 1 },
+      { name: "Comunicacion", credits: 2, sem: 1 },
+      { name: "Electiva Deportiva (Sem 1)", credits: 2, sem: 1, isElectiveRequirement: true },
+      
+      // Semester 2
+      { name: "Algebra Lineal", credits: 3, sem: 2 },
+      { name: "Calculo Diferencial", credits: 4, sem: 2 },
+      { name: "Fisica Mecanica", credits: 4, sem: 2 },
+      { name: "Sostenibilidad Ambiental", credits: 2, sem: 2 },
+      { name: "Humanismo Y Paz", credits: 2, sem: 2 },
+      { name: "Ingles 1", credits: 2, sem: 2 },
+
+      // Semester 3
+      { name: "Calculo Integral", credits: 4, sem: 3 },
+      { name: "Probabilidad Y Estadistica", credits: 3, sem: 3 },
+      { name: "Algoritmos Y Programacion", credits: 3, sem: 3 },
+      { name: "Circuitos Electricos", credits: 4, sem: 3 },
+      { name: "Emprendimiento E Innovacion", credits: 2, sem: 3 },
+      { name: "Ingles 2", credits: 2, sem: 3 },
+
+      // Semester 4
+      { name: "Ecuaciones Diferenciales", credits: 3, sem: 4 },
+      { name: "Física Eléctrica y Magnética (Sem 4)", credits: 4, sem: 4, csvMapName: "Fisica Electrica Y Magnetica" },
+      { name: "Electronica Analoga", credits: 4, sem: 4 },
+      { name: "Materiales Para Ingenieria", credits: 3, sem: 4 },
+      { name: "Desarrollo Regional- Ruralidad", credits: 2, sem: 4 },
+      { name: "Introduc. A La Investigacion", credits: 2, sem: 4 },
+      { name: "Historia Arte Y Cultura", credits: 2, sem: 4 },
+      { name: "Ingles 3", credits: 2, sem: 4 },
+
+      // Semester 5
+      { name: "Calculo Vectorial", credits: 3, sem: 5 },
+      { name: "Electronica Digital", credits: 4, sem: 5 },
+      { name: "Sensores Y Actuadores Industri", credits: 3, sem: 5 },
+      { name: "Mecánica de Fluidos (Sem 5)", credits: 3, sem: 5, csvMapName: "Mecanica De Fluidos" },
+      { name: "Economia Para Ingenieros", credits: 2, sem: 5 },
+
+      // Semester 6
+      { name: "Termodinámica (Sem 6)", credits: 3, sem: 6, csvMapName: "Termodinamica" },
+      { name: "Microprocesadores Y Sistemas", credits: 4, sem: 6 },
+      { name: "Sistemas Dinámicos (Sem 6)", credits: 3, sem: 6, csvMapName: "Sistemas Dinamicos" },
+      { name: "Electro Neumatica", credits: 3, sem: 6 },
+      { name: "Estatica", credits: 3, sem: 6 },
+      { name: "Metodolog. De La Investigacion", credits: 2, sem: 6 },
+
+      // Semester 7
+      { name: "Program. Orientada A Objetos", credits: 3, sem: 7 },
+      { name: "Señales y Sistemas (Sem 7)", credits: 3, sem: 7, csvMapName: "Señales Y Sistemas" },
+      { name: "Resistencia de Materiales (Sem 7)", credits: 3, sem: 7, csvMapName: "Resistencia De Materiales" },
+      { name: "Seminario de Investigación (Sem 7)", credits: 2, sem: 7, csvMapName: "Seminario De Investigacion" },
+      { name: "Formulación y Evaluación de Proyectos (Sem 7)", credits: 3, sem: 7, csvMapName: "Form. Y Evaluacion De Proyecto" },
+      { name: "Electiva Interdisciplinar II (Sem 7)", credits: 3, sem: 7, isElectiveRequirement: true },
+
+      // Semester 8
+      { name: "Sistemas Inteligentes Int. Art", credits: 3, sem: 8 },
+      { name: "Maquinas Electricas", credits: 3, sem: 8 },
+      { name: "Sistemas De Control Analogo", credits: 3, sem: 8 },
+      { name: "Procesos De Manufactura", credits: 3, sem: 8 },
+      { name: "Dinámica (Sem 8)", credits: 3, sem: 8, csvMapName: "Dinamica" },
+
+      // Semester 9
+      { name: "Sistemas de Control Digital (Sem 9)", credits: 3, sem: 9, csvMapName: "Sistemas De Control Digital" },
+      { name: "Automatiz. Procesos De Manufac", credits: 3, sem: 9 },
+      { name: "Diseño de Máquinas (Sem 9)", credits: 3, sem: 9, csvMapName: "Diseño De Maquinas" },
+
+      // Semester 10
+      { name: "Robotica Aplicada", credits: 3, sem: 10 },
+      { name: "Diseño Mecatronico", credits: 3, sem: 10 },
+      { name: "Opción de Grado (Sem 10)", credits: 4, sem: 10, csvMapName: "Opcion De Grado" },
+      { name: "Electiva de Profundización III (Sem 10)", credits: 3, sem: 10, isElectiveRequirement: true },
+      { name: "Electiva de Profundización V (Sem 10)", credits: 4, sem: 10, isElectiveRequirement: true }
+    ];
+
+    // Allowed subjects for this semester (from user prompt DATOS 1)
+    const HABILITADAS_NAMES = [
+      "Electiva Deportiva (Sem 1)",
+      "Física Eléctrica y Magnética (Sem 4)",
+      "Mecánica de Fluidos (Sem 5)",
+      "Termodinámica (Sem 6)",
+      "Sistemas Dinámicos (Sem 6)",
+      "Señales y Sistemas (Sem 7)",
+      "Resistencia de Materiales (Sem 7)",
+      "Seminario de Investigación (Sem 7)",
+      "Formulación y Evaluación de Proyectos (Sem 7)",
+      "Electiva Interdisciplinar II (Sem 7)",
+      "Dinámica (Sem 8)",
+      "Sistemas de Control Digital (Sem 9)",
+      "Diseño de Máquinas (Sem 9)",
+      "Electiva de Profundización III (Sem 10)",
+      "Electiva de Profundización V (Sem 10)",
+      "Opción de Grado (Sem 10)"
+    ];
+
+    // Elective classification mapping to match specific courses in CSV
+    const ELECTIVES_CLASSIFICATION = {
+      "Electiva Deportiva (Sem 1)": [
+        "Voleibol", "Baloncesto", "Rugby", "Futbol"
+      ],
+      "Electiva Interdisciplinar II (Sem 7)": [
+        "Diseño Podcast Y Contenido Int",
+        "Fotografia",
+        "Habilidades Informaticas Ing.",
+        "Energias Renovables",
+        "Minas Y Energia",
+        "Contabilidad Gerencial",
+        "Cine Y Politica",
+        "Ecoturismo",
+        "Finanzas Personales Y Proyecto",
+        "Power Skills: Habilidades Para",
+        "Inteligencia Emocional"
+      ],
+      "Electiva de Profundización III (Sem 10)": [
+        "Agricultura De Precision 1",
+        "Energias Alternativas 2",
+        "Nanobiotecnologia 1",
+        "Telecomunicaciones 2"
+      ],
+      "Electiva de Profundización V (Sem 10)": [
+        "Agricultura De Precision 1",
+        "Energias Alternativas 2",
+        "Nanobiotecnologia 1",
+        "Telecomunicaciones 2"
+      ]
+    };
+
+    // State Variables
+    let parsedClasses = [];
+    let enrolledClasses = {}; // Key: Course Requirement Name, Value: Enrolled Class Object
+    let passedSubjects = new Set(); // Stores subject requirement names marked as passed
+
+    // App Initialization
+    function init() {
+      try {
+        console.log("MecaPlan: Iniciando aplicación...");
+        
+        // 1. Parse CSV
+        parsedClasses = parseCSV(CSV_DATA);
+        console.log("MecaPlan: CSV cargado con", parsedClasses.length, "clases.");
+        
+        // 2. Load LocalStorage
+        loadState();
+        console.log("MecaPlan: Estado cargado desde LocalStorage.");
+
+        // 3. Render Static elements (Checklist, Grid headers, etc.)
+        renderTimeTableGridBase();
+        renderPensumChecklist();
+        console.log("MecaPlan: Elementos estáticos renderizados.");
+        
+        // 4. Register Event Listeners
+        const searchBar = document.getElementById("search-bar");
+        if (!searchBar) throw new Error("No se encontró el elemento 'search-bar' en el DOM.");
+        searchBar.addEventListener("input", filterAndRenderSubjects);
+        
+        const semesterSelect = document.getElementById("semester-select");
+        if (!semesterSelect) throw new Error("No se encontró el elemento 'semester-select' en el DOM.");
+        semesterSelect.addEventListener("change", filterAndRenderSubjects);
+        
+        const toggleHabilitadas = document.getElementById("toggle-habilitadas");
+        if (!toggleHabilitadas) throw new Error("No se encontró el elemento 'toggle-habilitadas' en el DOM.");
+        toggleHabilitadas.addEventListener("change", handleHabilitadasToggle);
+        
+        const btnClear = document.getElementById("btn-clear-schedule");
+        if (!btnClear) throw new Error("No se encontró el elemento 'btn-clear-schedule' en el DOM.");
+        btnClear.addEventListener("click", clearSchedule);
+        
+        const btnResolve = document.getElementById("btn-resolve-conflict");
+        if (btnResolve) {
+          btnResolve.addEventListener("click", () => {
+            if (pendingConflictResolver) {
+              pendingConflictResolver();
+            }
+          });
+        }
+
+        // Manage subjects modal listeners
+        const btnManage = document.getElementById("btn-manage-subjects");
+        if (btnManage) {
+          btnManage.onclick = () => {
+            const modal = document.getElementById("manage-subjects-modal");
+            modal.classList.add("active");
+            renderManageSubjectsTable();
+          };
+        }
+        
+        const manageSearchBar = document.getElementById("manage-search-bar");
+        if (manageSearchBar) {
+          manageSearchBar.oninput = renderManageSubjectsTable;
+        }
+        
+        // Export PDF listener
+        const btnExport = document.getElementById("btn-export-image");
+        if (btnExport) {
+          btnExport.onclick = () => {
+            const oldTitle = document.title;
+            document.title = "MecaPlan - Horario Semanal";
+            window.print();
+            document.title = oldTitle;
+          };
+        }
+
+        console.log("MecaPlan: Manejadores de eventos registrados.");
+
+        // Update Diagnostics
+        document.getElementById("diag-csv-rows").innerText = parsedClasses.length;
+        document.getElementById("diag-curr").innerText = CURRICULUM.length;
+        document.getElementById("diag-storage").innerText = "Correcto";
+
+        // 5. Initial Render
+        filterAndRenderSubjects();
+        updateTimetableAndStats();
+        console.log("MecaPlan: Renderizado inicial completado con éxito.");
+        
+      } catch (error) {
+        console.error("MecaPlan: Error crítico durante la inicialización:", error);
+        
+        const diagStorage = document.getElementById("diag-storage");
+        if (diagStorage) {
+          diagStorage.innerText = "Error: " + error.message;
+          diagStorage.style.color = "var(--danger)";
+        }
+        
+        // Mostrar en panel de diagnóstico visual
+        const banner = document.getElementById("diagnostic-banner");
+        const msg = document.getElementById("diagnostic-msg");
+        if (banner && msg) {
+          msg.innerHTML = `
+            <strong>Error crítico durante init():</strong> ${error.message}<br>
+            <strong>Stack Trace:</strong><br>${error.stack ? error.stack.replace(/\n/g, '<br>') : 'No disponible'}
+          `;
+          banner.style.backgroundColor = "#ef4444";
+          banner.style.display = "block";
+        }
+      }
+    }
+
+    // Ejecutar init cuando el DOM esté listo
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+
+    /* ----------------------------------------------------
+       CSV PARSER
+       ---------------------------------------------------- */
+    function parseCSV(csvText) {
+      const lines = csvText.split("\n");
+      const list = [];
+      
+      for (let i = 1; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue;
+        
+        const cols = line.split(",");
+        if (cols.length < 3) continue; // Safety check
+        
+        const semestre = cols[0] ? cols[0].trim() : "";
+        const curso = cols[1] ? cols[1].trim() : "";
+        const nClase = cols[2] ? cols[2].trim() : "";
+        
+        // Modalidad is ALWAYS the last element
+        const modalidad = cols[cols.length - 1] ? cols[cols.length - 1].trim() : "Presencial";
+        
+        const horarios = {};
+        const diasKeys = ["Lun", "Mar", "Mie", "Jue", "Vie", "Sab", "Dom"];
+        
+        // Loop from index 3 up to index 9 or cols.length - 2 (whichever is smaller)
+        const maxDayIndex = Math.min(9, cols.length - 2);
+        
+        for (let idx = 3; idx <= maxDayIndex; idx++) {
+          const colVal = cols[idx];
+          const dayCell = colVal ? colVal.trim() : "";
+          if (dayCell) {
+            const dayKey = diasKeys[idx - 3];
+            if (dayKey) {
+              const parts = dayCell.split(" ");
+              const slots = [];
+              
+              for (const part of parts) {
+                if (part.includes("..")) {
+                  const [startStr, endStr] = part.split("..");
+                  const startHour = parseInt(startStr);
+                  const endHour = parseInt(endStr);
+                  if (!isNaN(startHour) && !isNaN(endHour)) {
+                    slots.push({
+                      start: startHour,
+                      end: endHour
+                    });
+                  }
+                }
+              }
+              if (slots.length > 0) {
+                horarios[dayKey] = slots;
+              }
+            }
+          }
+        }
+        
+        list.push({
+          semestre,
+          curso,
+          nClase,
+          horarios,
+          modalidad: modalidad || "Presencial"
+        });
+      }
+      return list;
+    }
+
+    /* ----------------------------------------------------
+       CLOUD SYNC — JSONBin.io
+       ---------------------------------------------------- */
+    const JSONBIN_KEY  = '$2a$10$rltp/69In1aynwmLS24Xguw/knO.W0bIMH03lpVNOL2E460St3GcK';
+    const JSONBIN_URL  = 'https://api.jsonbin.io/v3/b/6a3a2eedda38895dfeefe5b9';
+    let   _cloudSaveTimer = null;
+
+    function setSyncStatus(state) {
+      // state: 'synced' | 'saving' | 'error' | 'loading'
+      const pill = document.getElementById('sync-status-pill');
+      const icon = document.getElementById('sync-status-icon');
+      const text = document.getElementById('sync-status-text');
+      if (!pill) return;
+      const styles = {
+        synced:  { bg:'rgba(16,185,129,0.12)', border:'rgba(16,185,129,0.25)', color:'#10b981', ico:'☁️',  lbl:'Sincronizado' },
+        saving:  { bg:'rgba(99,102,241,0.12)',  border:'rgba(99,102,241,0.3)',  color:'#818cf8', ico:'🔄',  lbl:'Guardando...' },
+        loading: { bg:'rgba(6,182,212,0.12)',   border:'rgba(6,182,212,0.3)',   color:'#22d3ee', ico:'⬇️',  lbl:'Cargando...' },
+        error:   { bg:'rgba(245,158,11,0.12)',  border:'rgba(245,158,11,0.3)',  color:'#fbbf24', ico:'⚠️',  lbl:'Sin conexión' }
+      };
+      const s = styles[state] || styles.synced;
+      pill.style.background = s.bg;
+      pill.style.border     = '1px solid ' + s.border;
+      pill.style.color      = s.color;
+      icon.textContent      = s.ico;
+      text.textContent      = s.lbl;
+    }
+
+    function buildCloudPayload() {
+      return {
+        enrolledClasses,
+        passedSubjects: Array.from(passedSubjects),
+        curriculum: CURRICULUM,
+        parsedClasses,
+        toggleHabilitadas: document.getElementById('toggle-habilitadas') ? document.getElementById('toggle-habilitadas').checked : false,
+        savedAt: new Date().toISOString()
+      };
+    }
+
+    async function saveToCloud() {
+      setSyncStatus('saving');
+      try {
+        const resp = await fetch(JSONBIN_URL, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Master-Key': JSONBIN_KEY
+          },
+          body: JSON.stringify(buildCloudPayload())
+        });
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        setSyncStatus('synced');
+      } catch (e) {
+        console.warn('MecaPlan: Cloud save failed:', e);
+        setSyncStatus('error');
+      }
+    }
+
+    async function loadFromCloud() {
+      setSyncStatus('loading');
+      try {
+        const resp = await fetch(JSONBIN_URL + '/latest', {
+          headers: { 'X-Master-Key': JSONBIN_KEY }
+        });
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        const json = await resp.json();
+        const data = json.record;
+        if (!data || !data.savedAt) { setSyncStatus('synced'); return false; }
+        // Apply cloud data
+        if (data.curriculum && Array.isArray(data.curriculum) && data.curriculum.length > 0) {
+          CURRICULUM.length = 0;
+          CURRICULUM.push(...data.curriculum);
+        }
+        if (data.parsedClasses && Array.isArray(data.parsedClasses) && data.parsedClasses.length > 0) {
+          parsedClasses = data.parsedClasses;
+        }
+        if (data.enrolledClasses) enrolledClasses = data.enrolledClasses;
+        if (data.passedSubjects)  passedSubjects  = new Set(data.passedSubjects);
+        if (data.toggleHabilitadas !== undefined) {
+          const tog = document.getElementById('toggle-habilitadas');
+          if (tog) tog.checked = data.toggleHabilitadas;
+        }
+        // Mirror to localStorage for offline fallback
+        try {
+          localStorage.setItem('enrolledClasses', JSON.stringify(enrolledClasses));
+          localStorage.setItem('passedSubjects',  JSON.stringify(Array.from(passedSubjects)));
+          localStorage.setItem('curriculum',      JSON.stringify(CURRICULUM));
+          localStorage.setItem('parsedClasses',   JSON.stringify(parsedClasses));
+        } catch(_){}
+        setSyncStatus('synced');
+        return true;
+      } catch (e) {
+        console.warn('MecaPlan: Cloud load failed, falling back to localStorage:', e);
+        setSyncStatus('error');
+        return false;
+      }
+    }
+
+    /* ----------------------------------------------------
+       STATE PERSISTENCE (LocalStorage + Cloud)
+       ---------------------------------------------------- */
+    function saveState() {
+      // 1. Always save locally for offline fallback
+      try {
+        localStorage.setItem('enrolledClasses', JSON.stringify(enrolledClasses));
+        localStorage.setItem('passedSubjects',  JSON.stringify(Array.from(passedSubjects)));
+        localStorage.setItem('curriculum',      JSON.stringify(CURRICULUM));
+        localStorage.setItem('parsedClasses',   JSON.stringify(parsedClasses));
+        const toggleState = document.getElementById('toggle-habilitadas').checked;
+        localStorage.setItem('toggleHabilitadas', toggleState);
+      } catch (e) {
+        console.warn('MecaPlan: localStorage save failed:', e);
+      }
+      // 2. Debounced cloud save (waits 2s after last change to batch writes)
+      clearTimeout(_cloudSaveTimer);
+      _cloudSaveTimer = setTimeout(saveToCloud, 2000);
+    }
+
+    function loadState() {
+      // Load from localStorage synchronously so UI renders immediately
+      try {
+        const savedEnrolled      = localStorage.getItem('enrolledClasses');
+        const savedPassed        = localStorage.getItem('passedSubjects');
+        const savedToggle        = localStorage.getItem('toggleHabilitadas');
+        const savedCurriculum    = localStorage.getItem('curriculum');
+        const savedParsedClasses = localStorage.getItem('parsedClasses');
+
+        if (savedCurriculum)    { const p = JSON.parse(savedCurriculum);    CURRICULUM.length = 0; CURRICULUM.push(...p); }
+        if (savedParsedClasses) { parsedClasses   = JSON.parse(savedParsedClasses); }
+        if (savedEnrolled)      { enrolledClasses = JSON.parse(savedEnrolled) || {}; }
+        if (savedPassed)        { passedSubjects  = new Set(Array.isArray(JSON.parse(savedPassed)) ? JSON.parse(savedPassed) : []); }
+        if (savedToggle !== null) { const tog = document.getElementById('toggle-habilitadas'); if (tog) tog.checked = (savedToggle === 'true'); }
+      } catch (e) {
+        console.error('Error loading from localStorage:', e);
+        enrolledClasses = {};
+        passedSubjects  = new Set();
+      }
+      // Then async-load from cloud and re-render if newer data is found
+      loadFromCloud().then(cloudLoaded => {
+        if (cloudLoaded) {
+          filterAndRenderSubjects();
+          updateTimetableAndStats();
+          showToast('Datos cargados desde la nube ☁️', 'success');
+        }
+      });
+    }
+
+    /* ----------------------------------------------------
+       RENDER BASICS & GENERALS
+       ---------------------------------------------------- */
+    function renderTimeTableGridBase() {
+      const grid = document.getElementById("timetable-grid-element");
+      grid.innerHTML = "";
+
+      // Render top left empty corner
+      const corner = document.createElement("div");
+      corner.className = "grid-cell grid-header";
+      corner.innerText = "Hora";
+      corner.style.gridColumn = "1";
+      corner.style.gridRow = "1";
+      grid.appendChild(corner);
+
+      // Render Day Headers
+      const days = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
+      const todayIdx = new Date().getDay(); // 0 is Sun, 1 is Mon...
+      const currentDay = todayIdx === 0 ? 6 : todayIdx - 1; // map so Mon=0, Sun=6
+
+      days.forEach((day, idx) => {
+        const header = document.createElement("div");
+        header.className = `grid-cell grid-header ${idx === currentDay ? 'active-day' : ''}`;
+        header.innerText = day;
+        header.style.gridColumn = String(idx + 2);
+        header.style.gridRow = "1";
+        grid.appendChild(header);
+      });
+
+      // Render slots row by row
+      // We cover 05:00 to 22:00 (17 rows)
+      for (let hour = 5; hour <= 21; hour++) {
+        // Time Label
+        const timeLabel = document.createElement("div");
+        timeLabel.className = "grid-cell grid-time-label";
+        timeLabel.innerHTML = `<span>${formatHour(hour)}</span><span style="font-size:8px;opacity:0.6;margin-top:2px;">${formatHour(hour+1)}</span>`;
+        timeLabel.style.gridColumn = "1";
+        timeLabel.style.gridRow = String(hour - 5 + 2);
+        grid.appendChild(timeLabel);
+
+        // Day slots
+        for (let day = 0; day < 7; day++) {
+          const slot = document.createElement("div");
+          slot.className = "grid-cell grid-slot";
+          slot.dataset.hour = hour;
+          slot.dataset.day = day;
+          slot.style.gridColumn = String(day + 2);
+          slot.style.gridRow = String(hour - 5 + 2);
+          grid.appendChild(slot);
+        }
+      }
+    }
+
+    function formatHour(h) {
+      return `${String(h).padStart(2, "0")}:00`;
+    }
+
+    function getCourseColor(courseName) {
+      let hash = 0;
+      for (let i = 0; i < courseName.length; i++) {
+        hash = courseName.charCodeAt(i) + ((hash << 5) - hash);
+      }
+      const hue = Math.abs(hash) % 360;
+      
+      // Fine-tuned colors to look absolutely fantastic on a dark theme
+      return {
+        bg: `hsl(${hue}, 60%, 13%)`,
+        border: `hsl(${hue}, 70%, 42%)`,
+        text: `hsl(${hue}, 90%, 82%)`,
+        lightBg: `hsl(${hue}, 60%, 20%)`
+      };
+    }
+
+    /* ----------------------------------------------------
+       CURRICULUM / CHECKLIST MANAGER
+       ---------------------------------------------------- */
+    function renderPensumChecklist() {
+      const container = document.getElementById("pensum-checklist-element");
+      container.innerHTML = "";
+
+      // Sort curriculum by Semester, then name
+      const sortedCurriculum = [...CURRICULUM].sort((a, b) => {
+        if (a.sem !== b.sem) return a.sem - b.sem;
+        return a.name.localeCompare(b.name);
+      });
+
+      sortedCurriculum.forEach(subject => {
+        const isApproved = passedSubjects.has(subject.name);
+        
+        const item = document.createElement("div");
+        item.className = `pensum-item ${isApproved ? 'approved' : ''}`;
+        item.onclick = (e) => toggleSubjectApproved(subject.name);
+
+        const left = document.createElement("div");
+        left.className = "pensum-item-left";
+
+        const checkbox = document.createElement("div");
+        checkbox.className = "pensum-checkbox";
+        checkbox.innerHTML = `
+          <svg viewBox="0 0 24 24">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        `;
+
+        const nameContainer = document.createElement("div");
+        nameContainer.className = "name-container";
+
+        const name = document.createElement("div");
+        name.className = "pensum-name";
+        name.innerText = subject.name;
+        name.title = subject.name;
+
+        const subText = document.createElement("div");
+        subText.className = "pensum-sub";
+        subText.innerText = subject.isElectiveRequirement 
+          ? `Electiva • Semestre ${subject.sem}` 
+          : `Semestre ${subject.sem}`;
+
+        nameContainer.appendChild(name);
+        nameContainer.appendChild(subText);
+        
+        left.appendChild(checkbox);
+        left.appendChild(nameContainer);
+
+        const badge = document.createElement("div");
+        badge.className = "pensum-credits-badge";
+        badge.innerText = `${subject.credits} CR`;
+
+        item.appendChild(left);
+        item.appendChild(badge);
+
+        container.appendChild(item);
+      });
+    }
+
+    function toggleSubjectApproved(subjectName) {
+      if (passedSubjects.has(subjectName)) {
+        passedSubjects.delete(subjectName);
+        showToast(`Marcada "${subjectName}" como pendiente.`, "info");
+      } else {
+        passedSubjects.add(subjectName);
+        showToast(`¡Excelente! "${subjectName}" aprobada.`, "success");
+        
+        // If the subject was currently enrolled in the simulator, unenroll it!
+        if (enrolledClasses[subjectName]) {
+          delete enrolledClasses[subjectName];
+        }
+      }
+      saveState();
+      renderPensumChecklist();
+      filterAndRenderSubjects();
+      updateTimetableAndStats();
+    }
+
+    function resetAllAproved() {
+      if (confirm("¿Estás seguro de que quieres restablecer todas tus materias aprobadas?")) {
+        passedSubjects.clear();
+        saveState();
+        renderPensumChecklist();
+        filterAndRenderSubjects();
+        updateTimetableAndStats();
+        showToast("Se han limpiado todas las materias aprobadas.", "info");
+      }
+    }
+
+    /* ----------------------------------------------------
+       SUBJECT LIST & DROPDOWNS (LEFT PANEL)
+       ---------------------------------------------------- */
+    function handleHabilitadasToggle() {
+      const toggle = document.getElementById("toggle-habilitadas");
+      const select = document.getElementById("semester-select");
+      
+      if (toggle.checked) {
+        select.value = "Habilitadas";
+      } else {
+        select.value = "All";
+      }
+      
+      saveState();
+      filterAndRenderSubjects();
+    }
+
+    function filterAndRenderSubjects() {
+      const query = document.getElementById("search-bar").value.toLowerCase().trim();
+      const semesterSelectValue = document.getElementById("semester-select").value;
+      const toggleHabilitadas = document.getElementById("toggle-habilitadas");
+
+      // Set toggle state based on dropdown selection
+      if (semesterSelectValue === "Habilitadas") {
+        toggleHabilitadas.checked = true;
+      } else {
+        toggleHabilitadas.checked = false;
+      }
+      saveState();
+
+      const container = document.getElementById("subject-list-container");
+      container.innerHTML = "";
+
+      // Filter curriculum list
+      let filteredCurriculum = CURRICULUM.filter(subject => {
+        // 1. Text filter
+        const matchesText = subject.name.toLowerCase().includes(query);
+        
+        // 2. Semester filter / Habilitadas filter
+        let matchesSemester = true;
+        if (semesterSelectValue === "Habilitadas") {
+          matchesSemester = !passedSubjects.has(subject.name);
+        } else if (semesterSelectValue !== "All") {
+          if (semesterSelectValue === "Electiva") {
+            matchesSemester = subject.isElectiveRequirement || subject.sem === "Electiva";
+          } else {
+            matchesSemester = String(subject.sem) === semesterSelectValue;
+          }
+        }
+        
+        return matchesText && matchesSemester;
+      });
+
+      const diagFiltered = document.getElementById("diag-filtered");
+      if (diagFiltered) diagFiltered.innerText = filteredCurriculum.length;
+
+      if (filteredCurriculum.length === 0) {
+        container.innerHTML = `
+          <div class="empty-message" style="margin:20px 0;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <span>No se encontraron materias con los filtros activos.</span>
+          </div>
+        `;
+        return;
+      }
+
+      // Render cards
+      filteredCurriculum.forEach(subject => {
+        const isEnrolled = !!enrolledClasses[subject.name];
+        const isApproved = passedSubjects.has(subject.name);
+        
+        // Get matching classes from parsed offer
+        const subClasses = getClassesForSubject(subject);
+
+        const card = document.createElement("div");
+        card.className = `subject-card ${isEnrolled ? 'active' : ''}`;
+        card.id = `subject-card-${subject.name.replace(/\s+/g, '-')}`;
+
+        // Header
+        const header = document.createElement("div");
+        header.className = "subject-card-header";
+        header.onclick = () => toggleSubjectCard(card);
+
+        const info = document.createElement("div");
+        info.className = "subject-info";
+
+        const title = document.createElement("span");
+        title.className = "subject-title";
+        title.innerText = subject.name;
+
+        const metaRow = document.createElement("div");
+        metaRow.className = "subject-meta";
+
+        const semBadge = document.createElement("span");
+        semBadge.className = "badge badge-sem";
+        semBadge.innerText = `Sem ${subject.sem}`;
+
+        const crBadge = document.createElement("span");
+        crBadge.className = "badge badge-cr";
+        crBadge.innerText = `${subject.credits} Cr`;
+
+        metaRow.appendChild(semBadge);
+        metaRow.appendChild(crBadge);
+
+        if (isApproved) {
+          const approvedBadge = document.createElement("span");
+          approvedBadge.className = "badge badge-status";
+          approvedBadge.innerText = "Aprobada";
+          metaRow.appendChild(approvedBadge);
+        } else if (isEnrolled) {
+          const enrolledBadge = document.createElement("span");
+          enrolledBadge.className = "badge";
+          enrolledBadge.style.background = "rgba(99,102,241,0.2)";
+          enrolledBadge.style.color = "#a78bfa";
+          enrolledBadge.style.border = "1px solid rgba(99,102,241,0.3)";
+          enrolledBadge.innerText = `Grupo: ${enrolledClasses[subject.name].nClase}`;
+          metaRow.appendChild(enrolledBadge);
+        }
+
+        info.appendChild(title);
+        info.appendChild(metaRow);
+
+        const arrow = document.createElement("div");
+        arrow.className = "subject-arrow";
+        arrow.innerHTML = `
+          <svg viewBox="0 0 24 24">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        `;
+
+        header.appendChild(info);
+        header.appendChild(arrow);
+        card.appendChild(header);
+
+        // Body
+        const body = document.createElement("div");
+        body.className = "subject-card-body";
+
+        const groupsContainer = document.createElement("div");
+        groupsContainer.className = "groups-container";
+
+        if (isApproved) {
+          groupsContainer.innerHTML = `
+            <div style="font-size: 11px; color: var(--success); text-align: center; padding: 10px;">
+              Esta asignatura ya fue aprobada y no requiere simulación de horario.
+            </div>
+          `;
+        } else if (subClasses.length === 0) {
+          groupsContainer.innerHTML = `
+            <div style="font-size: 11px; color: var(--text-secondary); text-align: center; padding: 10px;">
+              No hay horarios disponibles en el CSV para esta asignatura en este momento.
+            </div>
+          `;
+        } else {
+          // Render group cards
+          subClasses.forEach(cls => {
+            const isThisGroupEnrolled = isEnrolled && enrolledClasses[subject.name].nClase === cls.nClase;
+
+            const groupCard = document.createElement("div");
+            groupCard.className = `group-card ${isThisGroupEnrolled ? 'selected' : ''}`;
+            
+            // Hover preview listeners
+            groupCard.addEventListener("mouseenter", () => showPreview(subject.name, cls));
+            groupCard.addEventListener("mouseleave", hidePreview);
+            groupCard.onclick = (e) => {
+              // Click inside card toggles enrollment
+              if (e.target.tagName !== "BUTTON" && !e.target.closest("button")) {
+                toggleGroupEnrollment(subject, cls);
+              }
+            };
+
+            const gHeader = document.createElement("div");
+            gHeader.className = "group-card-header";
+
+            const gNum = document.createElement("span");
+            gNum.className = "group-num";
+            gNum.innerText = `Clase Nº ${cls.nClase} (${cls.curso})`;
+
+            const modTag = document.createElement("span");
+            modTag.className = `modalidad-tag ${cls.modalidad.toLowerCase()}`;
+            modTag.innerText = cls.modalidad;
+
+            gHeader.appendChild(gNum);
+            gHeader.appendChild(modTag);
+
+            const scheduleList = document.createElement("div");
+            scheduleList.className = "group-schedule";
+
+            // Format schedule items
+            const daysSpanish = { Lun: "Lun", Mar: "Mar", Mie: "Mié", Jue: "Jue", Vie: "Vie", Sab: "Sáb", Dom: "Dom" };
+            let hasSchedule = false;
+            
+            Object.keys(cls.horarios).forEach(day => {
+              hasSchedule = true;
+              cls.horarios[day].forEach(slot => {
+                const item = document.createElement("div");
+                item.className = "schedule-item";
+                item.innerHTML = `
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color:var(--text-secondary)">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                  </svg>
+                  <span>${daysSpanish[day]} ${formatHour(slot.start)} - ${formatHour(slot.end)}</span>
+                `;
+                scheduleList.appendChild(item);
+              });
+            });
+
+            if (!hasSchedule) {
+              const item = document.createElement("div");
+              item.className = "schedule-item";
+              item.innerHTML = `
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--info)">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="16" x2="12" y2="12"></line>
+                  <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                <span>Virtual / Asíncrona (Sin horario establecido)</span>
+              `;
+              scheduleList.appendChild(item);
+            }
+
+            const btn = document.createElement("button");
+            btn.className = "group-btn";
+            btn.innerText = isThisGroupEnrolled ? "Remover de Horario" : "Inscribir Materia";
+            btn.onclick = (e) => {
+              e.stopPropagation(); // prevent duplicate triggering
+              toggleGroupEnrollment(subject, cls);
+            };
+
+            groupCard.appendChild(gHeader);
+            groupCard.appendChild(scheduleList);
+            groupCard.appendChild(btn);
+
+            groupsContainer.appendChild(groupCard);
+          });
+        }
+
+        body.appendChild(groupsContainer);
+        card.appendChild(body);
+        container.appendChild(card);
+      });
+    }
+
+    function toggleSubjectCard(cardElement) {
+      const isExpanded = cardElement.classList.contains("expanded");
+      
+      // Close other cards first to keep layout clean
+      document.querySelectorAll(".subject-card.expanded").forEach(el => {
+        el.classList.remove("expanded");
+        el.querySelector(".subject-card-body").style.maxHeight = "0px";
+      });
+
+      if (!isExpanded) {
+        cardElement.classList.add("expanded");
+        const body = cardElement.querySelector(".subject-card-body");
+        body.style.maxHeight = body.scrollHeight + "px";
+      }
+    }
+
+    // Resolves matching courses from CSV offer
+    function getClassesForSubject(subject) {
+      // Direct matches
+      const targetName = subject.csvMapName || subject.name;
+      
+      if (subject.isElectiveRequirement) {
+        // If it's a general elective category, find courses matching the list of allowed specific electives
+        const allowedCourses = ELECTIVES_CLASSIFICATION[subject.name] || [];
+        return parsedClasses.filter(c => c.semestre.toLowerCase() === "electiva" && allowedCourses.includes(c.curso));
+      }
+
+      // Normal subject match
+      return parsedClasses.filter(c => c.curso.toLowerCase() === targetName.toLowerCase());
+    }
+
+    /* ----------------------------------------------------
+       CONFLICT ALGORITHM & SCHEDULING ENROLLMENT
+       ---------------------------------------------------- */
+    let pendingConflictResolver = null; // Stores function closure to override conflict
+
+    function toggleGroupEnrollment(subject, cls) {
+      const isEnrolled = !!enrolledClasses[subject.name];
+      const isSameGroup = isEnrolled && enrolledClasses[subject.name].nClase === cls.nClase;
+
+      if (isEnrolled && isSameGroup) {
+        // Unenroll
+        delete enrolledClasses[subject.name];
+        saveState();
+        filterAndRenderSubjects();
+        updateTimetableAndStats();
+        showToast(`Removida "${subject.name}" de tu horario.`, "info");
+      } else {
+        // Check conflicts
+        const conflicts = checkScheduleConflicts(subject.name, cls);
+
+        if (conflicts.length > 0) {
+          // Display conflict modal
+          showConflictModal(subject, cls, conflicts);
+        } else {
+          // Direct enrollment
+          enrollGroup(subject, cls);
+        }
+      }
+    }
+
+    function enrollGroup(subject, cls) {
+      enrolledClasses[subject.name] = {
+        requirementName: subject.name,
+        curso: cls.curso,
+        nClase: cls.nClase,
+        horarios: cls.horarios,
+        modalidad: cls.modalidad,
+        credits: subject.credits
+      };
+      
+      saveState();
+      filterAndRenderSubjects();
+      updateTimetableAndStats();
+      
+      showToast(`¡Inscrita con éxito! ${cls.curso} - Clase ${cls.nClase}`, "success");
+    }
+
+    function checkScheduleConflicts(newSubjectName, newClass) {
+      const conflicts = [];
+      const days = ["Lun", "Mar", "Mie", "Jue", "Vie", "Sab", "Dom"];
+      
+      // We check against all currently enrolled classes
+      Object.keys(enrolledClasses).forEach(reqName => {
+        // Skip check if replacing same requirement (since we will replace it anyway)
+        if (reqName === newSubjectName) return;
+
+        const enrolled = enrolledClasses[reqName];
+        if (!enrolled) return;
+
+        days.forEach(day => {
+          const newSlots = newClass.horarios[day] || [];
+          const enrolledSlots = (enrolled.horarios && enrolled.horarios[day]) || [];
+
+          newSlots.forEach(newSlot => {
+            enrolledSlots.forEach(enrolledSlot => {
+              // Collision condition: start1 < end2 && start2 < end1
+              if (newSlot.start < enrolledSlot.end && enrolledSlot.start < newSlot.end) {
+                conflicts.push({
+                  subjectName: reqName,
+                  course: enrolled.curso || reqName,
+                  nClase: enrolled.nClase || "",
+                  day: day,
+                  slot: enrolledSlot,
+                  newSlot: newSlot
+                });
+              }
+            });
+          });
+        });
+      });
+
+      return conflicts;
+    }
+
+    /* Conflict Modal Logic */
+    function showConflictModal(subject, cls, conflicts) {
+      const modal = document.getElementById("conflict-modal");
+      const desc = document.getElementById("conflict-modal-desc");
+      const container = document.getElementById("conflict-details-container");
+      
+      desc.innerHTML = `No se puede agregar <strong>${cls.curso} (Clase ${cls.nClase})</strong> porque interfiere con otras materias de tu horario.`;
+      
+      container.innerHTML = "";
+      const daysMap = { Lun: "Lunes", Mar: "Martes", Mie: "Miércoles", Jue: "Jueves", Vie: "Viernes", Sab: "Sábado", Dom: "Domingo" };
+
+      conflicts.forEach(c => {
+        const item = document.createElement("div");
+        item.className = "conflict-details-item";
+        item.innerHTML = `
+          <div class="conflict-subject-name">${c.subjectName} (${c.course})</div>
+          <div class="conflict-subject-meta">
+            <span>Clase: Nº ${c.nClase}</span>
+            <span style="color:#fca5a5; font-weight: 600;">
+              ${daysMap[c.day]} ${formatHour(c.slot.start)} - ${formatHour(c.slot.end)}
+            </span>
+          </div>
+          <div style="font-size:10px; color: var(--text-muted); border-top: 1px solid var(--border-color); padding-top:4px; margin-top:2px;">
+            Tu nueva clase requiere: ${daysMap[c.day]} ${formatHour(c.newSlot.start)} - ${formatHour(c.newSlot.end)}
+          </div>
+        `;
+        container.appendChild(item);
+      });
+
+      // Prepare override button action
+      pendingConflictResolver = () => {
+        // Unenroll conflicting subjects
+        conflicts.forEach(c => {
+          delete enrolledClasses[c.subjectName];
+        });
+        // Enroll new subject
+        enrollGroup(subject, cls);
+        closeConflictModal();
+      };
+
+      modal.classList.add("active");
+    }
+
+    function closeConflictModal() {
+      const modal = document.getElementById("conflict-modal");
+      modal.classList.remove("active");
+      pendingConflictResolver = null;
+    }
+
+    // Modal action override click registered inside DOMContentLoaded
+
+    /* ----------------------------------------------------
+       HOVER PREVIEW TIMETABLE SYSTEM
+       ---------------------------------------------------- */
+    function showPreview(requirementName, cls) {
+      // Hide active previews first
+      hidePreview();
+      
+      const grid = document.getElementById("timetable-grid-element");
+      const daysKey = ["Lun", "Mar", "Mie", "Jue", "Vie", "Sab", "Dom"];
+      const conflicts = checkScheduleConflicts(requirementName, cls);
+
+      // Loop days and slots of hovered class
+      daysKey.forEach((day, dayIdx) => {
+        const slots = cls.horarios[day] || [];
+        
+        slots.forEach(slot => {
+          const colIdx = dayIdx + 2; // column 1 is time labels
+          const rowStart = slot.start - 5 + 2; // 05:00 is row 2
+          const rowEnd = slot.end - 5 + 2;
+
+          // Check if this slot conflicts with any enrolled class
+          const hasConflict = conflicts.some(c => c.day === day && c.newSlot.start === slot.start && c.newSlot.end === slot.end);
+
+          // Create preview block element
+          const previewBlock = document.createElement("div");
+          previewBlock.className = `class-block preview-block ${hasConflict ? 'preview-conflict' : 'preview-ok'}`;
+          previewBlock.style.gridColumn = colIdx;
+          previewBlock.style.gridRow = `${rowStart} / ${rowEnd}`;
+          
+          previewBlock.innerHTML = `
+            <span class="class-block-title">${cls.curso}</span>
+            <div class="class-block-meta">
+              <span>Clase ${cls.nClase}</span>
+              <span class="class-block-time">${formatHour(slot.start)}-${formatHour(slot.end)}</span>
+            </div>
+          `;
+          
+          grid.appendChild(previewBlock);
+        });
+      });
+    }
+
+    function hidePreview() {
+      document.querySelectorAll(".preview-block").forEach(el => el.remove());
+    }
+
+    /* ----------------------------------------------------
+       RENDER TIMETABLE AND UPDATE STATS
+       ---------------------------------------------------- */
+    function updateTimetableAndStats() {
+      // 1. Remove all old non-preview class blocks
+      document.querySelectorAll(".timetable-grid .class-block:not(.preview-block)").forEach(el => el.remove());
+      const grid = document.getElementById("timetable-grid-element");
+      
+      // 2. Render enrolled classes on grid or virtual list
+      const virtualContainer = document.getElementById("virtual-classes-container");
+      const virtualEmptyMsg = document.getElementById("virtual-empty-message");
+      
+      // Clear virtual classes cards
+      virtualContainer.querySelectorAll(".virtual-card").forEach(el => el.remove());
+      let virtualCount = 0;
+
+      const daysKey = ["Lun", "Mar", "Mie", "Jue", "Vie", "Sab", "Dom"];
+      let enrolledCredits = 0;
+
+      Object.keys(enrolledClasses).forEach(reqName => {
+        const item = enrolledClasses[reqName];
+        if (!item) return;
+        enrolledCredits += item.credits || 0;
+
+        const color = getCourseColor(reqName);
+        let renderedOnGrid = false;
+
+        daysKey.forEach((day, dayIdx) => {
+          const slots = (item.horarios && item.horarios[day]) || [];
+          
+          slots.forEach(slot => {
+            // Check if slot falls outside our grid range (05:00 - 22:00)
+            if (slot.start >= 5 && slot.end <= 22) {
+              renderedOnGrid = true;
+              const colIdx = dayIdx + 2;
+              const rowStart = slot.start - 5 + 2;
+              const rowEnd = slot.end - 5 + 2;
+
+              const block = document.createElement("div");
+              block.className = "class-block";
+              block.style.gridColumn = colIdx;
+              block.style.gridRow = `${rowStart} / ${rowEnd}`;
+              block.style.backgroundColor = color.bg;
+              block.style.borderColor = color.border;
+              block.style.color = color.text;
+
+              block.innerHTML = `
+                <span class="class-block-title">${item.requirementName || reqName}</span>
+                <div class="class-block-meta">
+                  <span class="modalidad-tag ${(item.modalidad || 'Presencial').toLowerCase()}" style="font-size:7.5px; padding:1px 3px;">
+                    ${item.modalidad || 'Presencial'}
+                  </span>
+                  <span class="class-block-time">${formatHour(slot.start)}-${formatHour(slot.end)}</span>
+                </div>
+                <button class="class-block-delete" title="Remover materia">×</button>
+              `;
+
+              // Event listeners
+              block.querySelector(".class-block-delete").onclick = (e) => {
+                e.stopPropagation();
+                toggleGroupEnrollment({ name: item.requirementName || reqName }, item);
+              };
+
+              grid.appendChild(block);
+            }
+          });
+        });
+
+        // If it's a virtual course with slots outside 5-22, or no slots at all, put it in virtual container
+        if (!renderedOnGrid || (item.modalidad && item.modalidad.toLowerCase() === "virtual")) {
+          virtualCount++;
+          const card = document.createElement("div");
+          card.className = "virtual-card";
+          card.style.borderLeft = `4px solid ${color.border}`;
+          card.style.background = `rgba(30, 41, 59, 0.3)`;
+
+          let scheduleText = "Virtual Asíncrono";
+          // Check if there are any slots listed (like Jue 01..03)
+          const daysWithSlots = item.horarios ? Object.keys(item.horarios) : [];
+          if (daysWithSlots.length > 0) {
+            const list = [];
+            daysWithSlots.forEach(d => {
+              const dSlots = item.horarios[d] || [];
+              dSlots.forEach(s => {
+                list.push(`${d} ${formatHour(s.start)}-${formatHour(s.end)}`);
+              });
+            });
+            if (list.length > 0) {
+              scheduleText = `Admin: ${list.join(", ")}`;
+            }
+          }
+
+          card.innerHTML = `
+            <div class="virtual-info">
+              <span class="virtual-name">${item.requirementName || reqName}</span>
+              <div class="virtual-meta">
+                <span class="modalidad-tag virtual">${item.modalidad || 'Virtual'}</span>
+                <span style="opacity:0.8;">${scheduleText}</span>
+              </div>
+            </div>
+            <button class="virtual-delete-btn" title="Remover de horario">
+              <svg viewBox="0 0 24 24">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+              </svg>
+            </button>
+          `;
+
+          card.querySelector(".virtual-delete-btn").onclick = () => {
+            toggleGroupEnrollment({ name: item.requirementName || reqName }, item);
+          };
+
+          virtualContainer.appendChild(card);
+        }
+      });
+
+      // Show/Hide virtual empty message
+      if (virtualCount > 0) {
+        virtualEmptyMsg.style.display = "none";
+      } else {
+        virtualEmptyMsg.style.display = "flex";
+      }
+
+      // 3. Calculate statistics
+      let passedCredits = 0;
+      passedSubjects.forEach(name => {
+        const sub = CURRICULUM.find(s => s.name === name);
+        if (sub) passedCredits += sub.credits;
+      });
+
+      const totalCredits = 165;
+      const totalCombined = passedCredits + enrolledCredits;
+      const progressPercent = Math.round((totalCombined / totalCredits) * 100);
+      const passedPercent = (passedCredits / totalCredits) * 100;
+      const enrolledPercent = (enrolledCredits / totalCredits) * 100;
+
+      // Update values in UI
+      document.getElementById("header-credits-enrolled").innerText = `${enrolledCredits} cr`;
+      document.getElementById("header-progress-percent").innerText = `${progressPercent}%`;
+
+      document.getElementById("progress-percent-label").innerText = `${progressPercent}% Completado`;
+      document.getElementById("progress-credits-label").innerText = `${totalCombined} / ${totalCredits} cr`;
+
+      document.getElementById("bar-passed").style.width = `${passedPercent}%`;
+      document.getElementById("bar-enrolled").style.width = `${enrolledPercent}%`;
+
+      document.getElementById("val-passed-credits").innerText = passedCredits;
+      document.getElementById("val-enrolled-credits").innerText = enrolledCredits;
+      document.getElementById("val-remaining-credits").innerText = Math.max(0, totalCredits - totalCombined);
+
+      // Render modality analysis list
+      renderModalityStats();
+      // Update print-friendly subjects list
+      updatePrintSubjectsList();
+    }
+
+    function renderModalityStats() {
+      const container = document.getElementById("modality-stats-list");
+      container.innerHTML = "";
+
+      const counts = { Presencial: 0, Virtual: 0, Mixto: 0, Mediada: 0 };
+      let total = 0;
+
+      Object.keys(enrolledClasses).forEach(key => {
+        const item = enrolledClasses[key];
+        if (item && item.modalidad) {
+          const mod = item.modalidad;
+          if (counts[mod] !== undefined) {
+            counts[mod]++;
+            total++;
+          }
+        }
+      });
+
+      const colors = {
+        Presencial: "var(--success)",
+        Virtual: "var(--info)",
+        Mixto: "var(--warning)",
+        Mediada: "#f472b6"
+      };
+
+      if (total === 0) {
+        container.innerHTML = `
+          <div style="font-size:11px; color:var(--text-muted); text-align:center; padding: 10px 0;">
+            Inscribe materias para ver la distribución de modalidades.
+          </div>
+        `;
+        return;
+      }
+
+      Object.keys(counts).forEach(mod => {
+        const count = counts[mod];
+        const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+
+        if (count > 0) {
+          const item = document.createElement("div");
+          item.className = "modality-item";
+          item.innerHTML = `
+            <div class="modality-info">
+              <div class="modality-color" style="background:${colors[mod]}"></div>
+              <span>${mod}</span>
+            </div>
+            <span style="font-weight:600; color:var(--text-primary)">
+              ${count} ${count === 1 ? 'materia' : 'materias'} (${pct}%)
+            </span>
+          `;
+          container.appendChild(item);
+        }
+      });
+    }
+
+    function clearSchedule() {
+      if (confirm("¿Estás seguro de que quieres limpiar tu horario actual? Esto removerá todas tus materias inscritas este semestre.")) {
+        enrolledClasses = {};
+        saveState();
+        filterAndRenderSubjects();
+        updateTimetableAndStats();
+        showToast("Horario limpiado correctamente.", "info");
+      }
+    }
+
+    /* ----------------------------------------------------
+       PRINT SUBJECTS LIST FOR PDF EXPORT
+       ---------------------------------------------------- */
+    function updatePrintSubjectsList() {
+      const tbody = document.getElementById("print-subjects-tbody");
+      const totalLabel = document.getElementById("print-total-credits");
+      if (!tbody) return;
+
+      tbody.innerHTML = "";
+      let totalCredits = 0;
+      
+      const enrolledKeys = Object.keys(enrolledClasses);
+      if (enrolledKeys.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 12px; color: #666; border: 1.5px solid #000;">No hay materias inscritas.</td></tr>`;
+        if (totalLabel) totalLabel.innerText = "Total Créditos Inscritos: 0 cr";
+        return;
+      }
+
+      enrolledKeys.forEach(reqName => {
+        const item = enrolledClasses[reqName];
+        if (!item) return;
+        
+        totalCredits += item.credits || 0;
+        
+        // Format schedule text
+        let scheduleText = "";
+        if (item.modalidad && item.modalidad.toLowerCase() === "virtual") {
+          scheduleText = "Virtual / Asíncrona";
+        } else {
+          const daysSpanish = { Lun: "Lunes", Mar: "Martes", Mie: "Miércoles", Jue: "Jueves", Vie: "Viernes", Sab: "Sábado", Dom: "Domingo" };
+          const list = [];
+          Object.keys(item.horarios || {}).forEach(day => {
+            (item.horarios[day] || []).forEach(slot => {
+              list.push(`${daysSpanish[day]} ${formatHour(slot.start)} - ${formatHour(slot.end)}`);
+            });
+          });
+          scheduleText = list.length > 0 ? list.join(", ") : "Sin horario registrado";
+        }
+
+        const tr = document.createElement("tr");
+        tr.style.borderBottom = "1.5px solid #000";
+        tr.innerHTML = `
+          <td style="padding: 8px; border: 1.5px solid #000; font-weight: bold; color: #000;">${item.requirementName || reqName}</td>
+          <td style="padding: 8px; border: 1.5px solid #000; font-family: monospace; color: #000;">${item.nClase || 'N/A'}</td>
+          <td style="padding: 8px; border: 1.5px solid #000; color: #000;">${item.modalidad}</td>
+          <td style="padding: 8px; border: 1.5px solid #000; color: #000;">${scheduleText}</td>
+          <td style="padding: 8px; border: 1.5px solid #000; text-align: center; font-weight: bold; color: #000;">${item.credits || 0}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      if (totalLabel) {
+        totalLabel.innerText = `Total Créditos Inscritos: ${totalCredits} cr`;
+      }
+    }
+
+    /* ----------------------------------------------------
+       MANAGE SUBJECTS & SCHEDULES (CRUD LOGIC)
+       ---------------------------------------------------- */
+    let currentEditingGroups = [];
+
+    function closeManageSubjectsModal() {
+      const modal = document.getElementById("manage-subjects-modal");
+      modal.classList.remove("active");
+      cancelSubjectEdit();
+    }
+
+    function cancelSubjectEdit() {
+      document.getElementById("subject-edit-form-container").style.display = "none";
+      document.getElementById("edit-subject-index").value = "";
+      document.getElementById("edit-subject-original-name").value = "";
+      currentEditingGroups = [];
+    }
+
+    function renderManageSubjectsTable() {
+      const tbody = document.getElementById("manage-subjects-tbody");
+      if (!tbody) return;
+      tbody.innerHTML = "";
+      
+      const query = document.getElementById("manage-search-bar").value.toLowerCase().trim();
+      
+      const filtered = CURRICULUM.filter(s => s.name.toLowerCase().includes(query));
+      
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 20px; color: var(--text-muted);">No se encontraron materias.</td></tr>`;
+        return;
+      }
+
+      // Sort by Semester then Name
+      filtered.sort((a, b) => {
+        if (a.sem !== b.sem) {
+          if (a.sem === "Electiva") return 1;
+          if (b.sem === "Electiva") return -1;
+          return parseInt(a.sem) - parseInt(b.sem);
+        }
+        return a.name.localeCompare(b.name);
+      });
+
+      filtered.forEach(subject => {
+        const targetName = subject.csvMapName || subject.name;
+        const groupsCount = parsedClasses.filter(c => c.curso.toLowerCase() === targetName.toLowerCase() || (subject.isElectiveRequirement && c.semestre.toLowerCase() === "electiva" && (ELECTIVES_CLASSIFICATION[subject.name] || []).includes(c.curso))).length;
+
+        const tr = document.createElement("tr");
+        tr.style.borderBottom = "1px solid var(--border-color)";
+        
+        tr.innerHTML = `
+          <td style="padding: 8px; font-weight: 600; color: var(--text-primary);">${subject.name}</td>
+          <td style="padding: 8px; color: var(--text-secondary);">${subject.sem}</td>
+          <td style="padding: 8px; color: var(--text-secondary);">${subject.credits}</td>
+          <td style="padding: 8px; color: var(--text-secondary);">${groupsCount} grupo(s)</td>
+          <td style="padding: 8px; text-align: right;">
+            <button class="btn-secondary" style="padding: 3px 6px; font-size: 11px;" onclick="editSubjectInManage('${subject.name.replace(/'/g, "\\'")}')">Editar</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function editSubjectInManage(originalName) {
+      const subjectIndex = CURRICULUM.findIndex(s => s.name === originalName);
+      if (subjectIndex === -1) return;
+
+      const subject = CURRICULUM[subjectIndex];
+      
+      document.getElementById("edit-subject-index").value = subjectIndex;
+      document.getElementById("edit-subject-original-name").value = subject.name;
+      document.getElementById("edit-subject-name").value = subject.name;
+      document.getElementById("edit-subject-credits").value = subject.credits;
+      document.getElementById("edit-subject-sem").value = subject.sem;
+      
+      document.getElementById("edit-form-title").innerText = `Editar Materia: ${subject.name}`;
+
+      // Wire delete button directly with closure — avoids any onclick attribute / hidden field issues
+      const btnDel = document.getElementById("btn-delete-subject");
+      btnDel.style.display = "inline-block";
+      // Replace button with a clone to remove any stale listeners, then add fresh one
+      const btnDelClone = btnDel.cloneNode(true);
+      btnDel.parentNode.replaceChild(btnDelClone, btnDel);
+      btnDelClone.onclick = function() {
+        // Use inline 2-click confirmation (browser suppresses native dialogs on file:// pages)
+        if (!btnDelClone._confirmPending) {
+          // First click: enter confirmation mode
+          btnDelClone._confirmPending = true;
+          const origText = btnDelClone.textContent;
+          const origBg = btnDelClone.style.background;
+          btnDelClone.textContent = '⚠️ Confirmar eliminación';
+          btnDelClone.style.background = '#dc2626';
+          btnDelClone.style.animation = 'pulse 0.8s infinite';
+
+          // Auto-reset after 4 seconds
+          btnDelClone._confirmTimer = setTimeout(function() {
+            btnDelClone._confirmPending = false;
+            btnDelClone.textContent = 'Eliminar Materia';
+            btnDelClone.style.background = origBg;
+            btnDelClone.style.animation = '';
+          }, 4000);
+        } else {
+          // Second click: perform deletion
+          clearTimeout(btnDelClone._confirmTimer);
+          btnDelClone._confirmPending = false;
+          btnDelClone.style.animation = '';
+
+          const subjectName = originalName;
+          const idx = CURRICULUM.findIndex(s => s.name === subjectName);
+          if (idx === -1) {
+            btnDelClone.textContent = 'Materia no encontrada';
+            return;
+          }
+          const subj = CURRICULUM[idx];
+          if (enrolledClasses[subj.name]) delete enrolledClasses[subj.name];
+          passedSubjects.delete(subj.name);
+          CURRICULUM.splice(idx, 1);
+          const tgt = (subj.csvMapName || subj.name).toLowerCase();
+          parsedClasses = parsedClasses.filter(c => c.curso.toLowerCase() !== tgt);
+          saveState();
+          cancelSubjectEdit();
+          renderManageSubjectsTable();
+          renderPensumChecklist();
+          filterAndRenderSubjects();
+          updateTimetableAndStats();
+          showToast('Materia "' + subj.name + '" eliminada.', 'warning');
+        }
+      };
+      // Store handler reference for bridge access
+      btnDelClone._deleteHandler = btnDelClone.onclick;
+
+      const targetName = subject.csvMapName || subject.name;
+      const groups = parsedClasses.filter(c => c.curso.toLowerCase() === targetName.toLowerCase() || (subject.isElectiveRequirement && c.semestre.toLowerCase() === "electiva" && (ELECTIVES_CLASSIFICATION[subject.name] || []).includes(c.curso)));
+      
+      currentEditingGroups = JSON.parse(JSON.stringify(groups));
+      
+      renderEditGroupsList(currentEditingGroups);
+      
+      document.getElementById("subject-edit-form-container").style.display = "flex";
+      // Scroll to form
+      document.getElementById("subject-edit-form-container").scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function showCreateSubjectForm() {
+      document.getElementById("edit-subject-index").value = "-1";
+      document.getElementById("edit-subject-original-name").value = "";
+      document.getElementById("edit-subject-name").value = "";
+      document.getElementById("edit-subject-credits").value = "3";
+      document.getElementById("edit-subject-sem").value = "1";
+      
+      document.getElementById("edit-form-title").innerText = "Crear Nueva Materia";
+      document.getElementById("btn-delete-subject").style.display = "none";
+      
+      currentEditingGroups = [];
+      renderEditGroupsList(currentEditingGroups);
+      
+      document.getElementById("subject-edit-form-container").style.display = "flex";
+      // Scroll to form
+      document.getElementById("subject-edit-form-container").scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function renderEditGroupsList(groups) {
+      const container = document.getElementById("edit-groups-list");
+      if (!container) return;
+      container.innerHTML = "";
+
+      if (groups.length === 0) {
+        container.innerHTML = `
+          <div style="font-size: 11px; color: var(--text-muted); text-align: center; padding: 10px; border: 1px dashed var(--border-color); border-radius: 4px; grid-column: 1/-1;">
+            No hay grupos creados para esta materia. Haz clic en "Agregar Grupo" para crear uno.
+          </div>
+        `;
+        return;
+      }
+
+      groups.forEach((group, gIdx) => {
+        const groupCard = document.createElement("div");
+        groupCard.className = "group-edit-card";
+        
+        const headerRow = document.createElement("div");
+        headerRow.style = "display: grid; grid-template-columns: 1fr 1.2fr auto; gap: 8px; align-items: center;";
+        
+        const classNumContainer = document.createElement("div");
+        classNumContainer.style = "display: flex; flex-direction: column; gap: 2px;";
+        
+        const nClaseInput = document.createElement("input");
+        nClaseInput.type = "text";
+        nClaseInput.className = "search-input";
+        nClaseInput.style = "padding: 5px 8px; font-size: 12px; margin: 0;";
+        nClaseInput.value = group.nClase || "";
+        nClaseInput.placeholder = "Código clase";
+        nClaseInput.oninput = (e) => {
+          group.nClase = e.target.value;
+        };
+        
+        classNumContainer.innerHTML = `<span style="font-size: 9px; color: var(--text-muted); font-weight: 500;">Nº Clase / Código</span>`;
+        classNumContainer.appendChild(nClaseInput);
+        
+        const modalityContainer = document.createElement("div");
+        modalityContainer.style = "display: flex; flex-direction: column; gap: 2px;";
+        
+        const selectMod = document.createElement("select");
+        selectMod.className = "select-dropdown";
+        selectMod.style = "padding: 5px 8px; font-size: 12px; height: 32px;";
+        const modalities = ["Presencial", "Virtual", "Mixto", "Mediada"];
+        modalities.forEach(m => {
+          const opt = document.createElement("option");
+          opt.value = m;
+          opt.text = m;
+          if (m.toLowerCase() === (group.modalidad || "Presencial").toLowerCase()) opt.selected = true;
+          selectMod.appendChild(opt);
+        });
+        selectMod.onchange = (e) => {
+          group.modalidad = e.target.value;
+        };
+        
+        modalityContainer.innerHTML = `<span style="font-size: 9px; color: var(--text-muted); font-weight: 500;">Modalidad</span>`;
+        modalityContainer.appendChild(selectMod);
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.className = "btn-danger";
+        deleteBtn.style = "padding: 4px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; height: 30px; width: 30px; margin-top: 13px; cursor: pointer;";
+        deleteBtn.innerHTML = `
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        `;
+        deleteBtn.type = "button";
+        deleteBtn.title = "Eliminar Grupo";
+        deleteBtn.onclick = () => {
+          groups.splice(gIdx, 1);
+          renderEditGroupsList(groups);
+        };
+
+        headerRow.appendChild(classNumContainer);
+        headerRow.appendChild(modalityContainer);
+        headerRow.appendChild(deleteBtn);
+        groupCard.appendChild(headerRow);
+
+        // Group Schedules list
+        const schedulesContainer = document.createElement("div");
+        schedulesContainer.style = "display: flex; flex-direction: column; gap: 6px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 8px; margin-top: 4px;";
+        
+        const sHeader = document.createElement("div");
+        sHeader.style = "display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;";
+        sHeader.innerHTML = `
+          <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Bloques Horarios</span>
+        `;
+        
+        const addSlotBtn = document.createElement("button");
+        addSlotBtn.className = "btn-secondary";
+        addSlotBtn.style = "padding: 2px 6px; font-size: 9px; cursor: pointer;";
+        addSlotBtn.type = "button";
+        addSlotBtn.innerText = "➕ Añadir Bloque";
+        addSlotBtn.onclick = () => addSlotToGroup(gIdx);
+        sHeader.appendChild(addSlotBtn);
+        schedulesContainer.appendChild(sHeader);
+
+        const slotsList = document.createElement("div");
+        slotsList.className = "group-slots-list";
+
+        const slots = [];
+        const daysKeys = ["Lun", "Mar", "Mie", "Jue", "Vie", "Sab", "Dom"];
+        daysKeys.forEach(day => {
+          const daySlots = group.horarios[day] || [];
+          daySlots.forEach(s => {
+            slots.push({ day: day, start: s.start, end: s.end });
+          });
+        });
+
+        if (slots.length === 0) {
+          slotsList.innerHTML = `<span class="no-slots-label" style="font-size: 10px; color: var(--text-muted); font-style: italic; display: block; padding: 4px 0;">Sin bloques de horario (típico de virtual).</span>`;
+        } else {
+          slots.forEach((slot, sIdx) => {
+            const slotRow = document.createElement("div");
+            slotRow.style = "display: grid; grid-template-columns: 1.2fr 1fr 1fr auto; gap: 6px; align-items: center; margin-bottom: 4px;";
+            
+            // Day select
+            const selectDay = document.createElement("select");
+            selectDay.className = "select-dropdown";
+            selectDay.style = "padding: 3px 6px; font-size: 11px; height: 26px;";
+            const daysMap = { Lun: "Lun", Mar: "Mar", Mie: "Mié", Jue: "Jue", Vie: "Vie", Sab: "Sáb", Dom: "Dom" };
+            Object.keys(daysMap).forEach(dk => {
+              const opt = document.createElement("option");
+              opt.value = dk;
+              opt.text = daysMap[dk];
+              if (dk === slot.day) opt.selected = true;
+              selectDay.appendChild(opt);
+            });
+
+            // Start hour select
+            const selectStart = document.createElement("select");
+            selectStart.className = "select-dropdown";
+            selectStart.style = "padding: 3px 6px; font-size: 11px; height: 26px;";
+            
+            // End hour select
+            const selectEnd = document.createElement("select");
+            selectEnd.className = "select-dropdown";
+            selectEnd.style = "padding: 3px 6px; font-size: 11px; height: 26px;";
+
+            for (let h = 5; h <= 22; h++) {
+              const optStart = document.createElement("option");
+              optStart.value = h;
+              optStart.text = formatHour(h);
+              if (h === slot.start) optStart.selected = true;
+              selectStart.appendChild(optStart);
+
+              const optEnd = document.createElement("option");
+              optEnd.value = h;
+              optEnd.text = formatHour(h);
+              if (h === slot.end) optEnd.selected = true;
+              selectEnd.appendChild(optEnd);
+            }
+
+            const deleteSlotBtn = document.createElement("button");
+            deleteSlotBtn.className = "btn-secondary";
+            deleteSlotBtn.style = "padding: 3px; border-radius: 4px; display: flex; align-items: center; justify-content: center; height: 24px; width: 24px; cursor: pointer;";
+            deleteSlotBtn.type = "button";
+            deleteSlotBtn.innerHTML = `
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            `;
+            deleteSlotBtn.onclick = () => {
+              slots.splice(sIdx, 1);
+              // Save slots array back into group.horarios mapping
+              group.horarios = {};
+              slots.forEach(s => {
+                if (!group.horarios[s.day]) group.horarios[s.day] = [];
+                group.horarios[s.day].push({ start: s.start, end: s.end });
+              });
+              renderEditGroupsList(groups);
+            };
+
+            const updateSlotValues = () => {
+              slot.day = selectDay.value;
+              slot.start = parseInt(selectStart.value);
+              slot.end = parseInt(selectEnd.value);
+              
+              // Validate start < end, if not show warning or adjust
+              if (slot.start >= slot.end) {
+                slot.end = slot.start + 1;
+                selectEnd.value = slot.end;
+              }
+              
+              group.horarios = {};
+              slots.forEach(s => {
+                if (!group.horarios[s.day]) group.horarios[s.day] = [];
+                group.horarios[s.day].push({ start: s.start, end: s.end });
+              });
+            };
+
+            selectDay.onchange = updateSlotValues;
+            selectStart.onchange = updateSlotValues;
+            selectEnd.onchange = updateSlotValues;
+
+            slotRow.appendChild(selectDay);
+            slotRow.appendChild(selectStart);
+            slotRow.appendChild(selectEnd);
+            slotRow.appendChild(deleteSlotBtn);
+            slotsList.appendChild(slotRow);
+          });
+        }
+
+        schedulesContainer.appendChild(slotsList);
+        groupCard.appendChild(schedulesContainer);
+        container.appendChild(groupCard);
+      });
+    }
+
+    function addSlotToGroup(gIdx) {
+      const group = currentEditingGroups[gIdx];
+      if (!group) return;
+      
+      // Default to Lunes 08:00 - 10:00
+      if (!group.horarios.Lun) group.horarios.Lun = [];
+      group.horarios.Lun.push({ start: 8, end: 10 });
+      
+      renderEditGroupsList(currentEditingGroups);
+    }
+
+    function addEditGroupRow() {
+      const name = document.getElementById("edit-subject-name").value.trim() || "Nueva Materia";
+      const sem = document.getElementById("edit-subject-sem").value;
+      
+      currentEditingGroups.push({
+        semestre: sem,
+        curso: name,
+        nClase: String(Math.floor(1000 + Math.random() * 9000)),
+        horarios: {},
+        modalidad: "Presencial"
+      });
+      
+      renderEditGroupsList(currentEditingGroups);
+    }
+
+    function deleteSubjectFromManage() {
+      // Use the stored original name as primary key (more reliable than array index)
+      const originalName = document.getElementById("edit-subject-original-name").value;
+      
+      if (!originalName) {
+        alert("No se puede determinar qué materia eliminar. Por favor, abre el formulario de edición de la materia primero.");
+        return;
+      }
+
+      // Find the subject by name (fresh lookup, avoids index drift)
+      const subjectIndex = CURRICULUM.findIndex(s => s.name === originalName);
+      if (subjectIndex === -1) {
+        alert(`No se encontró la materia "${originalName}" en el plan de estudios.`);
+        return;
+      }
+
+      const subject = CURRICULUM[subjectIndex];
+
+      if (confirm(`¿Estás seguro de que quieres eliminar la materia "${subject.name}"?\n\nEsto también eliminará todos sus grupos/horarios y la removerá de tu horario.`)) {
+        // Remove from enrolled schedule if present
+        if (enrolledClasses[subject.name]) {
+          delete enrolledClasses[subject.name];
+        }
+
+        // Remove from passed subjects checklist
+        passedSubjects.delete(subject.name);
+
+        // Remove from CURRICULUM array
+        CURRICULUM.splice(subjectIndex, 1);
+
+        // Remove associated classes from parsedClasses
+        const targetName = (subject.csvMapName || subject.name).toLowerCase();
+        parsedClasses = parsedClasses.filter(c => c.curso.toLowerCase() !== targetName);
+
+        saveState();
+        cancelSubjectEdit();
+
+        renderManageSubjectsTable();
+        renderPensumChecklist();
+        filterAndRenderSubjects();
+        updateTimetableAndStats();
+
+        showToast(`Materia "${subject.name}" eliminada.`, "warning");
+      }
+    }
+
+    function saveSubjectFromForm() {
+      const index = parseInt(document.getElementById("edit-subject-index").value);
+      const originalName = document.getElementById("edit-subject-original-name").value;
+      const name = document.getElementById("edit-subject-name").value.trim();
+      const credits = parseInt(document.getElementById("edit-subject-credits").value);
+      const sem = document.getElementById("edit-subject-sem").value;
+
+      if (!name) {
+        alert("Por favor ingresa el nombre de la materia.");
+        return;
+      }
+      if (isNaN(credits) || credits <= 0) {
+        alert("Por favor ingresa un número de créditos válido.");
+        return;
+      }
+
+      const newSubject = {
+        name: name,
+        credits: credits,
+        sem: sem === "Electiva" ? "Electiva" : parseInt(sem) || sem
+      };
+
+      if (index === -1) {
+        // Create new subject
+        if (CURRICULUM.some(s => s.name.toLowerCase() === name.toLowerCase())) {
+          alert("Ya existe una materia con este nombre.");
+          return;
+        }
+        CURRICULUM.push(newSubject);
+      } else {
+        // Edit existing subject
+        const oldSubject = CURRICULUM[index];
+        
+        // Update enrolled references if name changed
+        if (oldSubject.name !== name) {
+          if (enrolledClasses[oldSubject.name]) {
+            enrolledClasses[name] = enrolledClasses[oldSubject.name];
+            enrolledClasses[name].requirementName = name;
+            enrolledClasses[name].curso = name;
+            enrolledClasses[name].credits = credits;
+            delete enrolledClasses[oldSubject.name];
+          }
+          if (passedSubjects.has(oldSubject.name)) {
+            passedSubjects.delete(oldSubject.name);
+            passedSubjects.add(name);
+          }
+        }
+        CURRICULUM[index] = newSubject;
+      }
+
+      // Update parsedClasses
+      const targetOldName = originalName || name;
+      parsedClasses = parsedClasses.filter(c => c.curso.toLowerCase() !== targetOldName.toLowerCase());
+
+      // Save groups back
+      currentEditingGroups.forEach(group => {
+        group.curso = name;
+        group.semestre = sem;
+        parsedClasses.push(group);
+      });
+
+      // Update enrolled classes with edited group details (if group code still exists, update schedule/modality)
+      const enrolledKeys = Object.keys(enrolledClasses);
+      enrolledKeys.forEach(key => {
+        const item = enrolledClasses[key];
+        if (key === name || key === originalName) {
+          // Find matching group in currentEditingGroups
+          const matchingGroup = currentEditingGroups.find(cg => cg.nClase === item.nClase);
+          if (matchingGroup) {
+            item.horarios = matchingGroup.horarios;
+            item.modalidad = matchingGroup.modalidad;
+          } else {
+            // Group was deleted, so unenroll
+            delete enrolledClasses[key];
+          }
+        }
+      });
+
+      saveState();
+      cancelSubjectEdit();
+      
+      renderManageSubjectsTable();
+      renderPensumChecklist();
+      filterAndRenderSubjects();
+      updateTimetableAndStats();
+      
+      showToast(`Materia "${name}" guardada con éxito.`, "success");
+    }
+
+    /* ----------------------------------------------------
+       TOAST NOTIFICATION COMPONENT
+       ---------------------------------------------------- */
+    function showToast(message, type = "success") {
+      const container = document.getElementById("toast-container-element");
+      
+      const toast = document.createElement("div");
+      toast.className = `toast ${type}`;
+      
+      const icons = {
+        success: `
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>`,
+        info: `
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>`,
+        warning: `
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+            <line x1="12" y1="9" x2="12" y2="13"></line>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>`,
+        error: `
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="15" y1="9" x2="9" y2="15"></line>
+            <line x1="9" y1="9" x2="15" y2="15"></line>
+          </svg>`
+      };
+
+      toast.innerHTML = `
+        ${icons[type]}
+        <span>${message}</span>
+      `;
+
+      container.appendChild(toast);
+      
+      // Trigger entrance animation
+      setTimeout(() => toast.classList.add("active"), 10);
+
+      // Remove after 3.5 seconds
+      setTimeout(() => {
+        toast.classList.remove("active");
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+  </script>
+</body>
+</html>
