@@ -1501,73 +1501,207 @@
     /* ----------------------------------------------------
        RESPONSIVE & MOBILE OVERLAYS
        ---------------------------------------------------- */
-    @media (max-width: 1400px) {
+    /* ====================================================
+       RESPONSIVE SYSTEM — Mobile-first
+       Breakpoints:
+         lg  : > 1100px  → 3-column desktop
+         md  : 768-1100px → 2-column tablet landscape
+         sm  : 480-767px  → 1-column tablet portrait / iPad
+         xs  : ≤479px     → mobile phone
+       ==================================================== */
+
+    /* Mobile tab-bar (hidden on desktop) */
+    #mobile-tab-bar {
+      display: none;
+    }
+
+    /* ---- lg (desktop, default) ---- */
+    @media (min-width: 1101px) {
       .main-container {
-        grid-template-columns: 320px 1fr;
+        grid-template-columns: 340px 1fr 320px;
+      }
+    }
+
+    /* ---- md : tablet landscape / small laptop ---- */
+    @media (max-width: 1100px) {
+      .main-container {
+        grid-template-columns: 300px 1fr;
+        grid-template-rows: 1fr auto;
       }
       .progress-panel {
-        grid-column: span 2;
-        height: auto;
+        grid-column: 1 / -1;
+        max-height: 420px;
         border-top: 1px solid var(--border-color);
-        max-height: 450px;
       }
       .progress-panel .panel-content {
         flex-direction: row;
         gap: 20px;
       }
-      .progress-card {
-        flex: 1;
-        height: 100%;
-        justify-content: center;
-      }
-      .pensum-container {
-        flex: 1.5;
-        height: 100%;
-      }
+      .progress-card { flex: 1; }
+      .pensum-container { flex: 1.5; }
+      header { padding: 12px 20px; }
+      .brand-text h1 { font-size: 18px; }
+      .quick-stats-bar { gap: 16px; }
+      .stat-badge .value { font-size: 15px; }
     }
 
-    @media (max-width: 1024px) {
+    /* ---- sm+xs : tablet portrait, iPad, mobile ---- */
+    @media (max-width: 900px) {
+      /* App becomes a single full-screen column with tab switching */
+      .app-wrapper {
+        height: 100dvh;
+        height: 100vh;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Show the mobile tab-bar */
+      #mobile-tab-bar {
+        display: flex;
+        flex-shrink: 0;
+        width: 100%;
+        background: rgba(15, 23, 42, 0.95);
+        border-top: 1px solid var(--border-color);
+        order: 99; /* stick to bottom */
+        z-index: 50;
+      }
+      .tab-btn {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        padding: 10px 4px;
+        background: none;
+        border: none;
+        color: var(--text-muted);
+        font-size: 10px;
+        font-weight: 600;
+        font-family: 'Outfit', sans-serif;
+        cursor: pointer;
+        transition: color var(--transition-fast);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      .tab-btn svg {
+        width: 20px;
+        height: 20px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2;
+      }
+      .tab-btn.active {
+        color: var(--accent);
+      }
+      .tab-btn.active svg {
+        filter: drop-shadow(0 0 4px rgba(99,102,241,0.6));
+      }
+
+      /* Main container scrolls as single column */
       .main-container {
-        grid-template-columns: 1fr;
-        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        flex: 1;
+        min-height: 0;
       }
-      .panel {
-        height: auto;
-        max-height: none;
-      }
+
+      /* All panels fill the available space, hidden by default */
+      .panel,
       .timetable-panel {
-        order: -1;
-        height: 600px;
-      }
-      .timetable-scroll-container {
-        overflow: auto;
-      }
-      .progress-panel {
-        grid-column: span 1;
+        display: none;
+        height: 100%;
+        width: 100%;
+        border-right: none;
+        border-bottom: none;
         max-height: none;
+        overflow: hidden;
+      }
+      /* Active panel is shown */
+      .panel.tab-active,
+      .timetable-panel.tab-active {
+        display: flex;
+      }
+
+      /* Progress panel overrides */
+      .progress-panel {
+        grid-column: unset;
+        max-height: none;
+        border-top: none;
       }
       .progress-panel .panel-content {
         flex-direction: column;
       }
+
+      /* Header compact */
+      header {
+        padding: 10px 16px;
+        flex-shrink: 0;
+      }
+      .brand-text h1 { font-size: 16px; }
+      .brand-text p  { display: none; }
+      .brand-logo    { width: 32px; height: 32px; }
+      .quick-stats-bar { gap: 12px; }
+      .stat-badge .value { font-size: 14px; }
+      .stat-badge .label { font-size: 9px; }
+
+      /* Panel header sync pill wraps nicely */
+      .panel-header-row { flex-wrap: wrap; gap: 6px; }
+      #sync-status-pill  { font-size: 9px; padding: 2px 6px; }
+
+      /* Timetable full-width horizontal scroll */
+      .timetable-scroll-container {
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
+        padding: 12px;
+      }
+      .timetable-grid {
+        min-width: 700px;
+        grid-template-rows: 36px repeat(17, 44px);
+      }
+
+      /* Modals full-screen on mobile */
+      .modal-container {
+        width: 98%;
+        max-height: 92vh;
+        overflow-y: auto;
+      }
+
+      /* Toast bottom clearance (above tab bar) */
+      .toast-container {
+        bottom: 70px;
+        right: 12px;
+      }
+      .toast {
+        font-size: 12px;
+        min-width: 200px;
+        max-width: calc(100vw - 24px);
+      }
     }
 
-    @media (max-width: 600px) {
+    /* ---- xs : phones ≤ 480px ---- */
+    @media (max-width: 480px) {
       header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 12px;
-        padding: 12px 20px;
+        padding: 8px 12px;
       }
       .quick-stats-bar {
-        width: 100%;
-        justify-content: space-between;
+        gap: 8px;
       }
-      .timetable-panel {
-        height: 500px;
+      .stat-badge:nth-child(n+4) {
+        display: none; /* hide extra stats on very small phones */
       }
-      .modal-container {
-        width: 95%;
+      .timetable-grid {
+        grid-template-columns: 60px repeat(7, minmax(80px, 1fr));
+        grid-template-rows: 32px repeat(17, 40px);
+        min-width: 620px;
       }
+      .class-block { font-size: 9px; padding: 4px 5px; }
+      .panel-header { padding: 10px 14px; }
+      .panel-content { padding: 12px 14px; }
+      .filter-options { flex-wrap: wrap; }
+      .select-dropdown { font-size: 12px; }
     }
 
     /* Style updates for Manage Subjects Modal and Print Layout */
@@ -1817,7 +1951,7 @@
     <div class="main-container">
       
       <!-- LEFT PANEL: SUBJECT SELECTION -->
-      <div class="panel">
+      <div class="panel tab-active" id="panel-subjects">
         <div class="panel-header">
           <div class="panel-header-row">
             <h2 class="panel-title">
@@ -1900,7 +2034,7 @@
       </div>
 
       <!-- CENTER PANEL: TIMETABLE GRID -->
-      <div class="panel timetable-panel">
+      <div class="panel timetable-panel" id="panel-timetable">
         <div class="timetable-header">
           <div class="timetable-title">
             <svg viewBox="0 0 24 24">
@@ -1960,7 +2094,7 @@
       </div>
 
       <!-- RIGHT PANEL: CAREER PROGRESS & PENSUM -->
-      <div class="panel progress-panel">
+      <div class="panel progress-panel" id="panel-progress">
         <div class="panel-header">
           <h2 class="panel-title">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -2040,8 +2174,35 @@
       </div>
 
     </div>
-  </div>
-
+      <!-- Mobile tab-bar (hidden on desktop) -->
+      <div id="mobile-tab-bar">
+        <button class="tab-btn active" data-tab="subjects" onclick="switchMobileTab('subjects')">
+          <svg viewBox="0 0 24 24">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+          </svg>
+          <span>Materias</span>
+        </button>
+        <button class="tab-btn" data-tab="timetable" onclick="switchMobileTab('timetable')">
+          <svg viewBox="0 0 24 24">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+          <span>Horario</span>
+        </button>
+        <button class="tab-btn" data-tab="progress" onclick="switchMobileTab('progress')">
+          <svg viewBox="0 0 24 24">
+            <line x1="18" y1="20" x2="18" y2="10"/>
+            <line x1="12" y1="20" x2="12" y2="4"/>
+            <line x1="6" y1="20" x2="6" y2="14"/>
+          </svg>
+          <span>Progreso</span>
+        </button>
+      </div>
+    </div>
+  
   <!-- CONFLICT MODAL OVERLAY -->
   <div class="modal-overlay" id="conflict-modal">
     <div class="modal-container">
@@ -4261,6 +4422,23 @@ Electiva,Inteligencia Emocional,6147,,,18..20,,,,,Presencial`;
         toast.classList.remove("active");
         setTimeout(() => toast.remove(), 300);
       }, 3500);
+    }
+
+    /* Mobile tab switching function */
+    function switchMobileTab(tabId) {
+      document.getElementById('panel-subjects').classList.remove('tab-active');
+      document.getElementById('panel-timetable').classList.remove('tab-active');
+      document.getElementById('panel-progress').classList.remove('tab-active');
+      
+      document.getElementById('panel-' + tabId).classList.add('tab-active');
+      
+      document.querySelectorAll('#mobile-tab-bar .tab-btn').forEach(btn => {
+        if (btn.getAttribute('data-tab') === tabId) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
     }
   </script>
 </body>
