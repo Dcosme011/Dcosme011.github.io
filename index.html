@@ -2613,6 +2613,7 @@ Electiva,Inteligencia Emocional,6147,,,18..20,,,,,Presencial`;
     let parsedClasses = [];
     let enrolledClasses = {}; // Key: Course Requirement Name, Value: Enrolled Class Object
     let passedSubjects = new Set(); // Stores subject requirement names marked as passed
+    let isLoadingState = true; // Block saves during initial load from cloud
 
     // App Initialization
     function init() {
@@ -2639,7 +2640,10 @@ Electiva,Inteligencia Emocional,6147,,,18..20,,,,,Presencial`;
         
         const semesterSelect = document.getElementById("semester-select");
         if (!semesterSelect) throw new Error("No se encontró el elemento 'semester-select' en el DOM.");
-        semesterSelect.addEventListener("change", filterAndRenderSubjects);
+        semesterSelect.addEventListener("change", () => {
+          saveState();
+          filterAndRenderSubjects();
+        });
         
         const toggleHabilitadas = document.getElementById("toggle-habilitadas");
         if (!toggleHabilitadas) throw new Error("No se encontró el elemento 'toggle-habilitadas' en el DOM.");
@@ -2827,7 +2831,7 @@ Electiva,Inteligencia Emocional,6147,,,18..20,,,,,Presencial`;
         curriculum: CURRICULUM,
         parsedClasses,
         toggleHabilitadas: document.getElementById('toggle-habilitadas') ? document.getElementById('toggle-habilitadas').checked : false,
-        savedAt: new Date().toISOString()
+        savedAt: localStorage.getItem('savedAt') || new Date().toISOString()
       };
     }
 
@@ -2860,6 +2864,19 @@ Electiva,Inteligencia Emocional,6147,,,18..20,,,,,Presencial`;
         const json = await resp.json();
         const data = json.record;
         if (!data || !data.savedAt) { setSyncStatus('synced'); return false; }
+
+        // Compare timestamps to make sure we don't load stale cloud data over newer local data
+        const localSavedAt = localStorage.getItem('savedAt');
+        if (localSavedAt && data.savedAt) {
+          const localTime = new Date(localSavedAt).getTime();
+          const cloudTime = new Date(data.savedAt).getTime();
+          if (localTime >= cloudTime) {
+            console.log("MecaPlan: Local data is newer or equal to cloud data. Skipping cloud load.");
+            setSyncStatus('synced');
+            return false;
+          }
+        }
+
         // Apply cloud data
         if (data.curriculum && Array.isArray(data.curriculum) && data.curriculum.length > 0) {
           CURRICULUM.length = 0;
@@ -2880,6 +2897,7 @@ Electiva,Inteligencia Emocional,6147,,,18..20,,,,,Presencial`;
           localStorage.setItem('passedSubjects',  JSON.stringify(Array.from(passedSubjects)));
           localStorage.setItem('curriculum',      JSON.stringify(CURRICULUM));
           localStorage.setItem('parsedClasses',   JSON.stringify(parsedClasses));
+          if (data.savedAt) localStorage.setItem('savedAt', data.savedAt);
         } catch(_){}
         setSyncStatus('synced');
         return true;
@@ -2894,14 +2912,19 @@ Electiva,Inteligencia Emocional,6147,,,18..20,,,,,Presencial`;
        STATE PERSISTENCE (LocalStorage + Cloud)
        ---------------------------------------------------- */
     function saveState() {
+      if (isLoadingState) return; // Prevent overwriting during initial sync/load
+
+      const savedAt = new Date().toISOString();
+
       // 1. Always save locally for offline fallback
       try {
         localStorage.setItem('enrolledClasses', JSON.stringify(enrolledClasses));
         localStorage.setItem('passedSubjects',  JSON.stringify(Array.from(passedSubjects)));
         localStorage.setItem('curriculum',      JSON.stringify(CURRICULUM));
         localStorage.setItem('parsedClasses',   JSON.stringify(parsedClasses));
-        const toggleState = document.getElementById('toggle-habilitadas').checked;
+        const toggleState = document.getElementById('toggle-habilitadas') ? document.getElementById('toggle-habilitadas').checked : false;
         localStorage.setItem('toggleHabilitadas', toggleState);
+        localStorage.setItem('savedAt', savedAt);
       } catch (e) {
         console.warn('MecaPlan: localStorage save failed:', e);
       }
@@ -2929,13 +2952,20 @@ Electiva,Inteligencia Emocional,6147,,,18..20,,,,,Presencial`;
         enrolledClasses = {};
         passedSubjects  = new Set();
       }
+
+      isLoadingState = true;
+
       // Then async-load from cloud and re-render if newer data is found
       loadFromCloud().then(cloudLoaded => {
+        isLoadingState = false; // Initial load finished
         if (cloudLoaded) {
           filterAndRenderSubjects();
           updateTimetableAndStats();
           showToast('Datos cargados desde la nube ☁️', 'success');
         }
+      }).catch(err => {
+        console.error('MecaPlan: Cloud load error:', err);
+        isLoadingState = false;
       });
     }
 
@@ -3132,7 +3162,6 @@ Electiva,Inteligencia Emocional,6147,,,18..20,,,,,Presencial`;
       } else {
         toggleHabilitadas.checked = false;
       }
-      saveState();
 
       const container = document.getElementById("subject-list-container");
       container.innerHTML = "";
