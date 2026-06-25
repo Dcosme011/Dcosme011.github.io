@@ -1501,377 +1501,73 @@
     /* ----------------------------------------------------
        RESPONSIVE & MOBILE OVERLAYS
        ---------------------------------------------------- */
-    /* ====================================================
-       RESPONSIVE SYSTEM — Mobile-first
-       Breakpoints:
-         lg  : > 1100px  → 3-column desktop
-         md  : 768-1100px → 2-column tablet landscape
-         sm  : 480-767px  → 1-column tablet portrait / iPad
-         xs  : ≤479px     → mobile phone
-       ==================================================== */
-
-    /* Mobile tab-bar (hidden on desktop) */
-    #mobile-tab-bar {
-      display: none;
-    }
-
-    /* ---- lg (desktop, default) ---- */
-    @media (min-width: 1101px) {
+    @media (max-width: 1400px) {
       .main-container {
-        grid-template-columns: 340px 1fr 320px;
-      }
-    }
-
-    /* ---- md : tablet landscape / small laptop ---- */
-    @media (max-width: 1100px) {
-      .main-container {
-        grid-template-columns: 300px 1fr;
-        grid-template-rows: 1fr auto;
+        grid-template-columns: 320px 1fr;
       }
       .progress-panel {
-        grid-column: 1 / -1;
-        max-height: 420px;
+        grid-column: span 2;
+        height: auto;
         border-top: 1px solid var(--border-color);
+        max-height: 450px;
       }
       .progress-panel .panel-content {
         flex-direction: row;
         gap: 20px;
       }
-      .progress-card { flex: 1; }
-      .pensum-container { flex: 1.5; }
-      header { padding: 12px 20px; }
-      .brand-text h1 { font-size: 18px; }
-      .quick-stats-bar { gap: 16px; }
-      .stat-badge .value { font-size: 15px; }
+      .progress-card {
+        flex: 1;
+        height: 100%;
+        justify-content: center;
+      }
+      .pensum-container {
+        flex: 1.5;
+        height: 100%;
+      }
     }
 
-    /* ---- sm+xs : tablet portrait, iPad, mobile ---- */
-    @media (max-width: 900px) {
-      /* App becomes a single full-screen column with tab switching */
-      .app-wrapper {
-        height: 100dvh;
-        height: 100vh;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-      }
-
-      /* Show the mobile tab-bar */
-      #mobile-tab-bar {
-        display: flex;
-        flex-shrink: 0;
-        width: 100%;
-        background: rgba(15, 23, 42, 0.95);
-        border-top: 1px solid var(--border-color);
-        order: 99; /* stick to bottom */
-        z-index: 50;
-      }
-      .tab-btn {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 3px;
-        padding: 10px 4px;
-        background: none;
-        border: none;
-        color: var(--text-muted);
-        font-size: 10px;
-        font-weight: 600;
-        font-family: 'Outfit', sans-serif;
-        cursor: pointer;
-        transition: color var(--transition-fast);
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-      }
-      .tab-btn svg {
-        width: 20px;
-        height: 20px;
-        stroke: currentColor;
-        fill: none;
-        stroke-width: 2;
-      }
-      .tab-btn.active {
-        color: var(--accent);
-      }
-      .tab-btn.active svg {
-        filter: drop-shadow(0 0 4px rgba(99,102,241,0.6));
-      }
-
-      /* Main container scrolls as single column */
+    @media (max-width: 1024px) {
       .main-container {
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-        flex: 1;
-        min-height: 0;
+        grid-template-columns: 1fr;
+        overflow-y: auto;
       }
-
-      /* All panels fill the available space, hidden by default */
-      .panel,
+      .panel {
+        height: auto;
+        max-height: none;
+      }
       .timetable-panel {
-        display: none;
-        height: 100%;
-        width: 100%;
-        border-right: none;
-        border-bottom: none;
-        max-height: none;
-        overflow: hidden;
+        order: -1;
+        height: 600px;
       }
-      /* Active panel is shown */
-      .panel.tab-active,
-      .timetable-panel.tab-active {
-        display: flex;
+      .timetable-scroll-container {
+        overflow: auto;
       }
-
-      /* Progress panel overrides */
       .progress-panel {
-        grid-column: unset;
+        grid-column: span 1;
         max-height: none;
-        border-top: none;
       }
       .progress-panel .panel-content {
         flex-direction: column;
       }
-
-      /* Header compact */
-      header {
-        padding: 10px 16px;
-        flex-shrink: 0;
-      }
-      .brand-text h1 { font-size: 16px; }
-      .brand-text p  { display: none; }
-      .brand-logo    { width: 32px; height: 32px; }
-      .quick-stats-bar { gap: 12px; }
-      .stat-badge .value { font-size: 14px; }
-      .stat-badge .label { font-size: 9px; }
-
-      /* Panel header sync pill wraps nicely */
-      .panel-header-row { flex-wrap: wrap; gap: 6px; }
-      #sync-status-pill  { font-size: 9px; padding: 2px 6px; }
-
-      /* Timetable full-width horizontal scroll */
-      .timetable-scroll-container {
-        overflow: auto;
-        -webkit-overflow-scrolling: touch;
-        padding: 12px;
-      }
-      .timetable-grid {
-        min-width: 700px;
-        grid-template-rows: 36px repeat(17, 44px);
-      }
-
-      /* Modals full-screen on mobile */
-      .modal-container {
-        width: 98%;
-        max-height: 92vh;
-        overflow-y: auto;
-      }
-
-      /* Toast bottom clearance (above tab bar) */
-      .toast-container {
-        bottom: 70px;
-        right: 12px;
-      }
-      .toast {
-        font-size: 12px;
-        min-width: 200px;
-        max-width: calc(100vw - 24px);
-      }
     }
 
-    /* ---- xs : phones ≤ 480px ---- */
-    @media (max-width: 480px) {
+    @media (max-width: 600px) {
       header {
-        padding: 8px 12px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 12px 20px;
       }
       .quick-stats-bar {
-        gap: 8px;
+        width: 100%;
+        justify-content: space-between;
       }
-      .stat-badge:nth-child(n+4) {
-        display: none; /* hide extra stats on very small phones */
-      }
-      .timetable-grid {
-        grid-template-columns: 60px repeat(7, minmax(80px, 1fr));
-        grid-template-rows: 32px repeat(17, 40px);
-        min-width: 620px;
-      }
-      .class-block { font-size: 9px; padding: 4px 5px; }
-      .panel-header { padding: 10px 14px; }
-      .panel-content { padding: 12px 14px; }
-      .filter-options { flex-wrap: wrap; }
-      .select-dropdown { font-size: 12px; }
-    }
-
-    /* Style updates for Manage Subjects Modal and Print Layout */
-    .group-edit-card {
-      background: rgba(15, 23, 42, 0.5) !important;
-      border: 1px solid var(--border-color) !important;
-      border-radius: var(--radius-md) !important;
-      padding: 14px !important;
-      display: flex !important;
-      flex-direction: column !important;
-      gap: 10px !important;
-      box-shadow: var(--shadow-sm);
-    }
-    
-    .group-slots-list {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    #print-subjects-list-container {
-      display: none;
-    }
-
-    @media print {
-      @page {
-        size: letter landscape;
-        margin: 1cm;
-      }
-      
-      body {
-        background: #ffffff !important;
-        color: #000000 !important;
-        min-height: auto !important;
-        background-image: none !important;
-      }
-      
-      .app-wrapper {
-        height: auto !important;
-        max-height: none !important;
-        display: block !important;
-      }
-      
-      header, 
-      .main-container > .panel:not(.timetable-panel), 
-      #diagnostic-banner,
-      .timetable-header,
-      .virtual-section,
-      .timetable-actions,
-      #diag-storage,
-      button,
-      .class-block-delete,
-      .toast-container,
-      .modal-overlay {
-        display: none !important;
-      }
-      
-      .main-container {
-        display: block !important;
-        background: none !important;
-        height: auto !important;
-        max-height: none !important;
-        width: 100% !important;
-        border: none !important;
-      }
-      
       .timetable-panel {
-        border: none !important;
-        background: none !important;
-        width: 100% !important;
-        height: auto !important;
-        overflow: visible !important;
-        display: block !important;
+        height: 500px;
       }
-      
-      .timetable-scroll-container {
-        padding: 0 !important;
-        overflow: visible !important;
-        height: auto !important;
-        max-height: none !important;
+      .modal-container {
+        width: 95%;
       }
-      
-      .timetable-grid {
-        display: grid !important;
-        width: 100% !important;
-        min-width: 0 !important;
-        border: 1.5px solid #000000 !important;
-        background: #dddddd !important; /* Lines color */
-        border-radius: var(--radius-md) !important;
-        page-break-inside: avoid;
-        grid-template-columns: 70px repeat(7, 1fr) !important;
-        grid-template-rows: 32px repeat(17, 30px) !important;
-      }
-      
-      .grid-cell {
-        background: #ffffff !important;
-        color: #111111 !important;
-        border: none !important;
-      }
-      
-      .grid-header {
-        background: #f3f4f6 !important;
-        color: #111827 !important;
-        font-size: 10px !important;
-        border-bottom: 1.5px solid #000000 !important;
-        display: flex !important;
-        align-items: center;
-        justify-content: center;
-      }
-      
-      .grid-time-label {
-        background: #f9fafb !important;
-        color: #374151 !important;
-        font-size: 9px !important;
-        border-right: 1.5px solid #000000 !important;
-        padding-top: 2px !important;
-      }
-      
-      .grid-time-label span {
-        font-size: 9px !important;
-      }
-      
-      .class-block {
-        margin: 1px !important;
-        border: 1.5px solid #000000 !important;
-        box-shadow: none !important;
-        border-radius: 4px !important;
-        padding: 4px 6px !important;
-        z-index: 2 !important;
-        print-color-adjust: exact !important;
-        -webkit-print-color-adjust: exact !important;
-        background-color: #f3f4f6 !important;
-        color: #000000 !important;
-      }
-      
-      .class-block-title {
-        font-size: 9.5px !important;
-        font-weight: bold !important;
-        color: #000000 !important;
-      }
-      
-      .class-block-meta {
-        font-size: 8px !important;
-        color: #333333 !important;
-      }
-      
-      .class-block-time {
-        font-size: 8px !important;
-        color: #000000 !important;
-        font-weight: bold !important;
-      }
-      
-      .modalidad-tag {
-        border: 1px solid #444 !important;
-        color: #000000 !important;
-        background: #e5e7eb !important;
-        font-size: 7px !important;
-        padding: 0px 2px !important;
-      }
-
-      #print-subjects-list-container {
-        display: block !important;
-        margin-top: 30px;
-        page-break-before: auto;
-      }
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.75; transform: scale(0.97); }
     }
   </style>
 </head>
@@ -1951,7 +1647,7 @@
     <div class="main-container">
       
       <!-- LEFT PANEL: SUBJECT SELECTION -->
-      <div class="panel tab-active" id="panel-subjects">
+      <div class="panel">
         <div class="panel-header">
           <div class="panel-header-row">
             <h2 class="panel-title">
@@ -1961,15 +1657,8 @@
               </svg>
               Planificar Clases
             </h2>
-            <button class="btn-secondary" id="btn-manage-subjects" style="padding: 4px 8px; font-size: 11px; display: flex; align-items: center; gap: 4px;" title="Agregar, modificar o eliminar materias y horarios">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color:var(--accent)">
-                <line x1="12" y1="5" x2="12" y2="19"></line>
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-              </svg>
-              Gestionar
-            </button>
             <!-- Cloud Sync Status Indicator -->
-            <div id="sync-status-pill" title="Estado de sincronización en la nube" style="display:flex;align-items:center;gap:5px;padding:3px 8px;border-radius:20px;font-size:10px;font-weight:600;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.25);color:#10b981;transition:all 0.4s ease;cursor:default;white-space:nowrap;">
+            <div id="sync-status-pill" title="Estado de sincronización en la nube" style="display:flex;align-items:center;gap:5px;padding:3px 8px;border-radius:20px;font-size:10px;font-weight:600;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.25);color:#10b981;transition:all 0.4s ease;cursor:default;white-space:nowrap;margin-left:auto;">
               <span id="sync-status-icon" style="font-size:11px;">☁️</span>
               <span id="sync-status-text">Sincronizado</span>
             </div>
@@ -2034,7 +1723,7 @@
       </div>
 
       <!-- CENTER PANEL: TIMETABLE GRID -->
-      <div class="panel timetable-panel" id="panel-timetable">
+      <div class="panel timetable-panel">
         <div class="timetable-header">
           <div class="timetable-title">
             <svg viewBox="0 0 24 24">
@@ -2046,7 +1735,7 @@
             Horario Semanal
           </div>
           <div class="timetable-actions">
-            <button class="btn-secondary" id="btn-export-image" title="Guardar horario como PDF">
+            <button class="btn-secondary" id="btn-export-image" title="Exportar horario a imagen o PDF" onclick="alert('Tip: Puedes usar la función de impresión de tu navegador (Ctrl+P) guardando como PDF para obtener una copia perfecta y escalada de tu horario simulado.')">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                 <polyline points="7 10 12 15 17 10"></polyline>
@@ -2094,7 +1783,7 @@
       </div>
 
       <!-- RIGHT PANEL: CAREER PROGRESS & PENSUM -->
-      <div class="panel progress-panel" id="panel-progress">
+      <div class="panel progress-panel">
         <div class="panel-header">
           <h2 class="panel-title">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -2174,35 +1863,8 @@
       </div>
 
     </div>
-      <!-- Mobile tab-bar (hidden on desktop) -->
-      <div id="mobile-tab-bar">
-        <button class="tab-btn active" data-tab="subjects" onclick="switchMobileTab('subjects')">
-          <svg viewBox="0 0 24 24">
-            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
-            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-          </svg>
-          <span>Materias</span>
-        </button>
-        <button class="tab-btn" data-tab="timetable" onclick="switchMobileTab('timetable')">
-          <svg viewBox="0 0 24 24">
-            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-            <line x1="16" y1="2" x2="16" y2="6"/>
-            <line x1="8" y1="2" x2="8" y2="6"/>
-            <line x1="3" y1="10" x2="21" y2="10"/>
-          </svg>
-          <span>Horario</span>
-        </button>
-        <button class="tab-btn" data-tab="progress" onclick="switchMobileTab('progress')">
-          <svg viewBox="0 0 24 24">
-            <line x1="18" y1="20" x2="18" y2="10"/>
-            <line x1="12" y1="20" x2="12" y2="4"/>
-            <line x1="6" y1="20" x2="6" y2="14"/>
-          </svg>
-          <span>Progreso</span>
-        </button>
-      </div>
-    </div>
-  
+  </div>
+
   <!-- CONFLICT MODAL OVERLAY -->
   <div class="modal-overlay" id="conflict-modal">
     <div class="modal-container">
@@ -2250,143 +1912,12 @@
     </div>
   </div>
 
-  <!-- MANAGE SUBJECTS MODAL OVERLAY -->
-  <div class="modal-overlay" id="manage-subjects-modal">
-    <div class="modal-container" style="max-width: 650px; width: 95%; max-height: 85vh; display: flex; flex-direction: column;">
-      <div class="modal-header">
-        <h3>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color:var(--accent)">
-            <path d="M12 20h9"></path>
-            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
-          </svg>
-          Gestionar Asignaturas y Horarios
-        </h3>
-        <button class="modal-close" onclick="closeManageSubjectsModal()">
-          <svg viewBox="0 0 24 24">
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
-        </button>
-      </div>
-      
-      <div class="modal-body" style="flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; padding: 20px;">
-        <!-- Action Row -->
-        <div style="display: flex; gap: 10px; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; flex-shrink: 0;">
-          <input type="text" id="manage-search-bar" class="search-input" placeholder="Buscar materia a editar..." style="max-width: 300px; padding-top: 8px; padding-bottom: 8px; margin: 0;">
-          <button class="btn-primary" onclick="showCreateSubjectForm()" style="display: flex; align-items: center; gap: 6px; padding: 8px 12px; font-size: 12px;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <line x1="12" y1="5" x2="12" y2="19"></line>
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-            </svg>
-            Nueva Materia
-          </button>
-        </div>
-
-        <!-- Dynamic Form for Subject Creation / Edit (hidden by default) -->
-        <div id="subject-edit-form-container" style="display: none; background: rgba(30, 41, 59, 0.4); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px; flex-direction: column; gap: 12px; flex-shrink: 0;">
-          <h4 id="edit-form-title" style="font-size: 14px; color: var(--text-primary); border-bottom: 1px solid var(--border-color); padding-bottom: 6px; margin-bottom: 4px;">Editar Materia</h4>
-          
-          <input type="hidden" id="edit-subject-index">
-          <input type="hidden" id="edit-subject-original-name">
-
-          <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px;">
-            <div style="display: flex; flex-direction: column; gap: 4px;">
-              <label style="font-size: 11px; color: var(--text-secondary);">Nombre de la Materia</label>
-              <input type="text" id="edit-subject-name" class="search-input" style="padding: 6px 10px;" placeholder="Ej. Robótica 2">
-            </div>
-            <div style="display: flex; flex-direction: column; gap: 4px;">
-              <label style="font-size: 11px; color: var(--text-secondary);">Créditos</label>
-              <input type="number" id="edit-subject-credits" class="search-input" style="padding: 6px 10px;" min="1" max="10" placeholder="Ej. 3">
-            </div>
-            <div style="display: flex; flex-direction: column; gap: 4px;">
-              <label style="font-size: 11px; color: var(--text-secondary);">Semestre</label>
-              <select id="edit-subject-sem" class="select-dropdown" style="padding: 6px 10px; height: 38px;">
-                <option value="1">Semestre 1</option>
-                <option value="2">Semestre 2</option>
-                <option value="3">Semestre 3</option>
-                <option value="4">Semestre 4</option>
-                <option value="5">Semestre 5</option>
-                <option value="6">Semestre 6</option>
-                <option value="7">Semestre 7</option>
-                <option value="8">Semestre 8</option>
-                <option value="9">Semestre 9</option>
-                <option value="10">Semestre 10</option>
-                <option value="Electiva">Electiva</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- Class Groups Section -->
-          <div style="margin-top: 10px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-              <span style="font-size: 12px; font-weight: 600; color: var(--text-primary);">Grupos y Horarios</span>
-              <button class="btn-secondary" onclick="addEditGroupRow()" style="padding: 3px 8px; font-size: 10px;">➕ Agregar Grupo</button>
-            </div>
-            
-            <div id="edit-groups-list" style="display: flex; flex-direction: column; gap: 10px; max-height: 200px; overflow-y: auto; padding-right: 4px;">
-              <!-- Dynamic Group Edit rows -->
-            </div>
-          </div>
-
-          <!-- Form Buttons -->
-          <div style="display: flex; justify-content: flex-end; gap: 8px; border-top: 1px solid var(--border-color); padding-top: 12px; margin-top: 8px;">
-            <button class="btn-secondary" onclick="cancelSubjectEdit()" style="padding: 6px 12px; font-size: 12px;">Cancelar</button>
-            <button class="btn-danger" id="btn-delete-subject" style="padding: 6px 12px; font-size: 12px; display: none;">Eliminar Materia</button>
-            <button class="btn-primary" onclick="saveSubjectFromForm()" style="padding: 6px 12px; font-size: 12px;">Guardar Cambios</button>
-          </div>
-        </div>
-
-        <!-- Subjects List Table -->
-        <div id="manage-subjects-list-container" style="flex-grow: 1; overflow-y: auto;">
-          <table style="width: 100%; border-collapse: collapse; font-size: 12px; color: var(--text-primary);">
-            <thead>
-              <tr style="text-align: left; border-bottom: 1.5px solid var(--border-color); color: var(--text-secondary);">
-                <th style="padding: 8px; font-weight: 600;">Materia</th>
-                <th style="padding: 8px; font-weight: 600; width: 60px;">Sem.</th>
-                <th style="padding: 8px; font-weight: 600; width: 60px;">Créd.</th>
-                <th style="padding: 8px; font-weight: 600; width: 100px;">Grupos</th>
-                <th style="padding: 8px; font-weight: 600; width: 80px; text-align: right;">Acción</th>
-              </tr>
-            </thead>
-            <tbody id="manage-subjects-tbody">
-              <!-- Dynamic content -->
-            </tbody>
-          </table>
-        </div>
-      </div>
-      
-      <div class="modal-footer" style="flex-shrink: 0;">
-        <button class="btn-secondary" onclick="closeManageSubjectsModal()">Cerrar</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- PRINT ONLY CONTAINER FOR EXPORTED SCHEDULE LIST -->
-  <div id="print-subjects-list-container" class="print-only">
-    <h2 style="font-family: 'Outfit', sans-serif; font-size: 18px; margin-top: 25px; margin-bottom: 15px; border-bottom: 2px solid #000000; padding-bottom: 6px; color: #000000;">Detalle de Asignaturas Inscritas</h2>
-    <table style="width: 100%; border-collapse: collapse; font-family: 'Inter', sans-serif; font-size: 11px; margin-top: 10px;">
-      <thead>
-        <tr style="background-color: #f3f4f6; border: 1.5px solid #000000; text-align: left;">
-          <th style="padding: 8px; border: 1.5px solid #000000; font-weight: bold; color: #000000;">Asignatura</th>
-          <th style="padding: 8px; border: 1.5px solid #000000; font-weight: bold; color: #000000; width: 90px;">Código (Nº Clase)</th>
-          <th style="padding: 8px; border: 1.5px solid #000000; font-weight: bold; color: #000000; width: 100px;">Modalidad</th>
-          <th style="padding: 8px; border: 1.5px solid #000000; font-weight: bold; color: #000000;">Horario Correspondiente</th>
-          <th style="padding: 8px; border: 1.5px solid #000000; font-weight: bold; color: #000000; width: 70px; text-align: center;">Créditos</th>
-        </tr>
-      </thead>
-      <tbody id="print-subjects-tbody">
-        <!-- Enrolled subjects rows will be inserted here dynamically -->
-      </tbody>
-    </table>
-    <div style="margin-top: 15px; text-align: right; font-weight: bold; font-family: 'Outfit', sans-serif; font-size: 13px; color: #000000; border-top: 1.5px dashed #000000; padding-top: 10px;" id="print-total-credits">
-      Total Créditos Inscritos: 0 cr
-    </div>
-  </div>
-
   <!-- TOAST CONTAINER FOR NOTIFICATIONS -->
   <div class="toast-container" id="toast-container-element"></div>
 
-  <!-- JavaScript Logic -->
+  <!-- ----------------------------------------------------
+       JAVASCRIPT LOGIC
+       ---------------------------------------------------- */
   <script>
     // CSV Database integration
     const CSV_DATA = `Semestre,Curso,Nº Clase,Lun,Mar,Mie,Jue,Vie,Sab,Dom,Modalidad
@@ -2404,10 +1935,10 @@
 2,Fisica Mecanica,5631,14..17,,14..16,,,,,Presencial
 2,Sostenibilidad Ambiental,5953,20..22,,,,,,,Presencial
 2,Humanismo Y Paz,5155,,,,,01..04,,,Virtual
-2,Ingles 1,6123,07..09,,07..09,,,,,Presencial
+2,Ingles 1,6123,07..09,,07..09,,,,,,Presencial
 3,Calculo Integral,5698,,,07..10,,,,,Presencial
 3,Probabilidad Y Estadistica,5936,,11..13,10..13,,,,,Presencial
-3,Algoritmos Y Programacion,5235,14..16,15..18,,,,,,Presencial
+3,Algoritmos Y Programacion,5235,14..16,15..18,,,,,,,Presencial
 3,Circuitos Electricos,5243,10..13,,,14..17,,,,Presencial
 3,Emprendimiento E Innovacion,5114,18..20,,,,,,,Presencial
 3,Ingles 2,6124,,,,,,00..04,,Virtual
@@ -2422,7 +1953,7 @@
 4,Ingles 3,6125,,,,,,,04..08,Virtual
 5,Calculo Vectorial,5704,,18..21,,,,,,Presencial
 5,Electronica Digital,5253,11..13,,10..13,,,,,Presencial
-5,Sensores Y Actuadores Industri,5255,15..18,15..18,,,,,,Presencial
+5,Sensores Y Actuadores Industri,5255,15..18,15..18,,,,,,,Presencial
 5,Mecanica De Fluidos,5176,,,10..12 13..16,,,,,Presencial
 5,Mecanica De Fluidos,5189,,,18..20,,10..13,,,Presencial
 5,Mecanica De Fluidos,6024,18..21,,,18..20,,,,Presencial
@@ -2437,7 +1968,7 @@
 6,Metodolog. De La Investigacion,5096,,,14..16,,,,,Presencial
 7,Program. Orientada A Objetos,5287,,,,,18..21 10..13,,,Presencial
 7,Señales Y Sistemas,5285,,16..18,15..18,,,,,Presencial
-7,Señales Y Sistemas,5286,18..20,18..21,,,,,,Presencial
+7,Señales Y Sistemas,5286,18..20,18..21,,,,,,,Presencial
 7,Resistencia De Materiales,5271,16..18,,,16..18,,,,Presencial
 7,Resistencia De Materiales,5288,,,,,14..16 20..22,,,Presencial
 7,Seminario De Investigacion,5100,,,,,14..16,,,Presencial
@@ -2456,26 +1987,26 @@
 9,Diseño De Maquinas,5295,18..20,,18..21,,,,,Presencial
 10,Robotica Aplicada,5303,,18..21,,18..20,,,,Presencial
 10,Diseño Mecatronico,5301,18..20,,18..21,,,,,Presencial
-10,Opcion De Grado,5882,05..07,05..07,,,,,,Mediada
+10,Opcion De Grado,5882,05..07,05..07,,,,,,,Mediada
 10,Opcion De Grado,6057,,16..18,,06..09 08..11,,,,Mixto
 Electiva,Agricultura De Precision 1,5302,,,,,07..10,,,Presencial
 Electiva,Energias Alternativas 2,5299,,,,,10..13,,,Presencial
 Electiva,Nanobiotecnologia 1,5304,,,,,14..17,,,Presencial
 Electiva,Telecomunicaciones 2,5300,,,,,14..17,,,Presencial
-Electiva,Voleibol,6010,14..16,,,,,,,Presencial
-Electiva,Baloncesto,6006,16..18,,,,,,,Presencial
-Electiva,Rugby,6018,14..16,,,,,,,Presencial
-Electiva,Diseño Podcast Y Contenido Int,6012,18..20,,,,,,,Mediada
+Electiva,Voleibol,6010,14..16,,,,,,,,Presencial
+Electiva,Baloncesto,6006,16..18,,,,,,,,Presencial
+Electiva,Rugby,6018,14..16,,,,,,,,Presencial
+Electiva,Diseño Podcast Y Contenido Int,6012,18..20,,,,,,,,Mediada
 Electiva,Fotografia,6156,,,16..18,,,,,Mediada
 Electiva,Habilidades Informaticas Ing.,5240,,,16..18,,,,,Presencial
 Electiva,Energias Renovables,5083,,,10..12,,,,,Presencial
-Electiva,Minas Y Energia,5245,20..22,,,,,,,Presencial
-Electiva,Contabilidad Gerencial,5873,20..22,,,,,,,Presencial
+Electiva,Minas Y Energia,5245,20..22,,,,,,,,Presencial
+Electiva,Contabilidad Gerencial,5873,20..22,,,,,,,,Presencial
 Electiva,Cine Y Politica,5183,,,01..03,,,,,Virtual
 Electiva,Ecoturismo,5192,,,15..17,,,,,Virtual
-Electiva,Finanzas Personales Y Proyecto,5871,18..20,,,,,,,Presencial
-Electiva,Futbol,6004,,14..16,,,,,,Presencial
-Electiva,Power Skills: Habilidades Para,5305,18..20,,,,,,,Presencial
+Electiva,Finanzas Personales Y Proyecto,5871,18..20,,,,,,,,Presencial
+Electiva,Futbol,6004,,14..16,,,,,,,Presencial
+Electiva,Power Skills: Habilidades Para,5305,18..20,,,,,,,,Presencial
 Electiva,Inteligencia Emocional,6147,,,18..20,,,,,Presencial`;
 
     // Curriculum details - mapping names and credits for the 165 credits program
@@ -2613,7 +2144,6 @@ Electiva,Inteligencia Emocional,6147,,,18..20,,,,,Presencial`;
     let parsedClasses = [];
     let enrolledClasses = {}; // Key: Course Requirement Name, Value: Enrolled Class Object
     let passedSubjects = new Set(); // Stores subject requirement names marked as passed
-    let isLoadingState = true; // Block saves during initial load from cloud
 
     // App Initialization
     function init() {
@@ -2640,10 +2170,7 @@ Electiva,Inteligencia Emocional,6147,,,18..20,,,,,Presencial`;
         
         const semesterSelect = document.getElementById("semester-select");
         if (!semesterSelect) throw new Error("No se encontró el elemento 'semester-select' en el DOM.");
-        semesterSelect.addEventListener("change", () => {
-          saveState();
-          filterAndRenderSubjects();
-        });
+        semesterSelect.addEventListener("change", filterAndRenderSubjects);
         
         const toggleHabilitadas = document.getElementById("toggle-habilitadas");
         if (!toggleHabilitadas) throw new Error("No se encontró el elemento 'toggle-habilitadas' en el DOM.");
@@ -2661,33 +2188,6 @@ Electiva,Inteligencia Emocional,6147,,,18..20,,,,,Presencial`;
             }
           });
         }
-
-        // Manage subjects modal listeners
-        const btnManage = document.getElementById("btn-manage-subjects");
-        if (btnManage) {
-          btnManage.onclick = () => {
-            const modal = document.getElementById("manage-subjects-modal");
-            modal.classList.add("active");
-            renderManageSubjectsTable();
-          };
-        }
-        
-        const manageSearchBar = document.getElementById("manage-search-bar");
-        if (manageSearchBar) {
-          manageSearchBar.oninput = renderManageSubjectsTable;
-        }
-        
-        // Export PDF listener
-        const btnExport = document.getElementById("btn-export-image");
-        if (btnExport) {
-          btnExport.onclick = () => {
-            const oldTitle = document.title;
-            document.title = "MecaPlan - Horario Semanal";
-            window.print();
-            document.title = oldTitle;
-          };
-        }
-
         console.log("MecaPlan: Manejadores de eventos registrados.");
 
         // Update Diagnostics
@@ -2723,12 +2223,8 @@ Electiva,Inteligencia Emocional,6147,,,18..20,,,,,Presencial`;
       }
     }
 
-    // Ejecutar init cuando el DOM esté listo
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', init);
-    } else {
-      init();
-    }
+    // Ejecutar init inmediatamente ya que el script se encuentra al final del DOM
+    init();
 
     /* ----------------------------------------------------
        CSV PARSER
@@ -2800,51 +2296,54 @@ Electiva,Inteligencia Emocional,6147,,,18..20,,,,,Presencial`;
     /* ----------------------------------------------------
        CLOUD SYNC — JSONBin.io
        ---------------------------------------------------- */
-    const JSONBIN_KEY  = '$2a$10$rltp/69In1aynwmLS24Xguw/knO.W0bIMH03lpVNOL2E460St3GcK';
-    const JSONBIN_URL  = 'https://api.jsonbin.io/v3/b/6a3a2eedda38895dfeefe5b9';
-    let   _cloudSaveTimer = null;
+    const JSONBIN_KEY = '$2a$10$rltp/69In1aynwmLS24Xguw/knO.W0bIMH03lpVNOL2E460St3GcK';
+    const JSONBIN_URL = 'https://api.jsonbin.io/v3/b/6a3a2eedda38895dfeefe5b9';
+    let _cloudSaveTimer = null;
+    let _isSyncingFromCloud = false; // guard contra re-entrancy
 
     function setSyncStatus(state) {
-      // state: 'synced' | 'saving' | 'error' | 'loading'
       const pill = document.getElementById('sync-status-pill');
       const icon = document.getElementById('sync-status-icon');
       const text = document.getElementById('sync-status-text');
       if (!pill) return;
       const styles = {
-        synced:  { bg:'rgba(16,185,129,0.12)', border:'rgba(16,185,129,0.25)', color:'#10b981', ico:'☁️',  lbl:'Sincronizado' },
-        saving:  { bg:'rgba(99,102,241,0.12)',  border:'rgba(99,102,241,0.3)',  color:'#818cf8', ico:'🔄',  lbl:'Guardando...' },
-        loading: { bg:'rgba(6,182,212,0.12)',   border:'rgba(6,182,212,0.3)',   color:'#22d3ee', ico:'⬇️',  lbl:'Cargando...' },
-        error:   { bg:'rgba(245,158,11,0.12)',  border:'rgba(245,158,11,0.3)',  color:'#fbbf24', ico:'⚠️',  lbl:'Sin conexión' }
+        synced:  { bg:'rgba(16,185,129,0.12)', border:'rgba(16,185,129,0.25)', color:'#10b981', ico:'☁️',  lbl:'Sincronizado'  },
+        saving:  { bg:'rgba(99,102,241,0.12)',  border:'rgba(99,102,241,0.3)',  color:'#818cf8', ico:'🔄',  lbl:'Guardando...'  },
+        loading: { bg:'rgba(6,182,212,0.12)',   border:'rgba(6,182,212,0.3)',   color:'#22d3ee', ico:'⬇️',  lbl:'Cargando...'   },
+        error:   { bg:'rgba(245,158,11,0.12)',  border:'rgba(245,158,11,0.3)',  color:'#fbbf24', ico:'⚠️',  lbl:'Sin conexión'  },
+        conflict:{ bg:'rgba(239,68,68,0.12)',   border:'rgba(239,68,68,0.3)',   color:'#f87171', ico:'⚡',  lbl:'Conflicto'     }
       };
       const s = styles[state] || styles.synced;
       pill.style.background = s.bg;
-      pill.style.border     = '1px solid ' + s.border;
-      pill.style.color      = s.color;
-      icon.textContent      = s.ico;
-      text.textContent      = s.lbl;
+      pill.style.border      = '1px solid ' + s.border;
+      pill.style.color       = s.color;
+      icon.textContent       = s.ico;
+      text.textContent       = s.lbl;
     }
 
-    function buildCloudPayload() {
-      return {
-        enrolledClasses,
-        passedSubjects: Array.from(passedSubjects),
-        curriculum: CURRICULUM,
-        parsedClasses,
-        toggleHabilitadas: document.getElementById('toggle-habilitadas') ? document.getElementById('toggle-habilitadas').checked : false,
-        savedAt: localStorage.getItem('savedAt') || new Date().toISOString()
-      };
+    // Cuenta cuántos datos "reales" tiene un estado (para comparar riqueza)
+    function _stateScore(enrolled, passed) {
+      return Object.keys(enrolled || {}).length * 10 + (passed ? passed.length : 0);
     }
 
-    async function saveToCloud() {
+    // Merge: une aprobadas y matriculadas de ambas fuentes (local gana en conflicto de matrícula)
+    function _mergeStates(localEnrolled, localPassed, cloudEnrolled, cloudPassed) {
+      // passedSubjects: unión de ambos conjuntos
+      const mergedPassed = new Set([...localPassed, ...cloudPassed]);
+
+      // enrolledClasses: local tiene prioridad; solo agrega de cloud lo que local no tiene
+      const mergedEnrolled = Object.assign({}, cloudEnrolled, localEnrolled);
+
+      return { mergedEnrolled, mergedPassed };
+    }
+
+    async function saveToCloud(payload) {
       setSyncStatus('saving');
       try {
         const resp = await fetch(JSONBIN_URL, {
           method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Master-Key': JSONBIN_KEY
-          },
-          body: JSON.stringify(buildCloudPayload())
+          headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_KEY },
+          body: JSON.stringify(payload)
         });
         if (!resp.ok) throw new Error('HTTP ' + resp.status);
         setSyncStatus('synced');
@@ -2854,87 +2353,165 @@ Electiva,Inteligencia Emocional,6147,,,18..20,,,,,Presencial`;
       }
     }
 
-    async function loadFromCloud() {
+    async function syncWithCloud() {
+      // Evitar ejecuciones simultáneas
+      if (_isSyncingFromCloud) return;
+      _isSyncingFromCloud = true;
       setSyncStatus('loading');
+
       try {
         const resp = await fetch(JSONBIN_URL + '/latest', {
           headers: { 'X-Master-Key': JSONBIN_KEY }
         });
         if (!resp.ok) throw new Error('HTTP ' + resp.status);
         const json = await resp.json();
-        const data = json.record;
-        if (!data || !data.savedAt) { setSyncStatus('synced'); return false; }
+        const cloud = json.record;
 
-        // Compare timestamps to make sure we don't load stale cloud data over newer local data
+        if (!cloud || !cloud.savedAt) {
+          // Nube vacía: solo subimos lo local
+          _isSyncingFromCloud = false;
+          _scheduledCloudSave();
+          return;
+        }
+
+        // ── Construir estado local actual ──
+        const localEnrolled = enrolledClasses;
+        const localPassed   = Array.from(passedSubjects);
+        const localScore    = _stateScore(localEnrolled, localPassed);
+
+        // ── Construir estado cloud ──
+        const cloudEnrolled = cloud.enrolledClasses || {};
+        const cloudPassed   = cloud.passedSubjects  || [];
+        const cloudScore    = _stateScore(cloudEnrolled, cloudPassed);
+
         const localSavedAt = localStorage.getItem('savedAt');
-        if (localSavedAt && data.savedAt) {
-          const localTime = new Date(localSavedAt).getTime();
-          const cloudTime = new Date(data.savedAt).getTime();
-          if (localTime >= cloudTime) {
-            console.log("MecaPlan: Local data is newer or equal to cloud data. Skipping cloud load.");
-            setSyncStatus('synced');
-            return false;
+        const localTime    = localSavedAt ? new Date(localSavedAt).getTime() : 0;
+        const cloudTime    = cloud.savedAt ? new Date(cloud.savedAt).getTime() : 0;
+
+        let needsRerender = false;
+
+        if (cloudScore === 0 && localScore > 0) {
+          // La nube está vacía pero local tiene datos → solo subir local, no tocar nada
+          console.log('MecaPlan: Nube vacía, subiendo estado local.');
+        } else if (localScore === 0 && cloudScore > 0) {
+          // Local vacío pero la nube tiene datos → aplicar nube directamente
+          console.log('MecaPlan: Local vacío, aplicando datos de la nube.');
+          enrolledClasses = cloudEnrolled;
+          passedSubjects  = new Set(cloudPassed);
+          _applyCloudCurriculum(cloud);
+          _mirrorToLocalStorage(cloud.savedAt);
+          needsRerender = true;
+        } else if (localScore > 0 && cloudScore > 0) {
+          // Ambos tienen datos → MERGE inteligente
+          const timeDiff = Math.abs(cloudTime - localTime);
+          const THRESHOLD_MS = 60 * 1000; // 60 segundos de tolerancia
+
+          if (timeDiff <= THRESHOLD_MS) {
+            // Prácticamente simultáneos → mergear
+            console.log('MecaPlan: Timestamps similares, mergeando estados.');
+            const { mergedEnrolled, mergedPassed } = _mergeStates(localEnrolled, localPassed, cloudEnrolled, cloudPassed);
+            enrolledClasses = mergedEnrolled;
+            passedSubjects  = mergedPassed;
+            _mirrorToLocalStorage(new Date().toISOString());
+            needsRerender = true;
+          } else if (cloudTime > localTime) {
+            // La nube es más nueva: merge favoreciendo cloud pero sin perder local
+            console.log('MecaPlan: Nube más nueva, mergeando con prioridad cloud.');
+            const { mergedEnrolled, mergedPassed } = _mergeStates(cloudEnrolled, cloudPassed, localEnrolled, localPassed);
+            enrolledClasses = mergedEnrolled;
+            passedSubjects  = mergedPassed;
+            _applyCloudCurriculum(cloud);
+            _mirrorToLocalStorage(cloud.savedAt);
+            needsRerender = true;
+          } else {
+            // Local es más nuevo → no cambiar nada, solo subir a la nube
+            console.log('MecaPlan: Local más nuevo, subiendo a nube.');
           }
         }
 
-        // Apply cloud data
-        if (data.curriculum && Array.isArray(data.curriculum) && data.curriculum.length > 0) {
-          CURRICULUM.length = 0;
-          CURRICULUM.push(...data.curriculum);
+        // Siempre guardar el estado final en la nube
+        _scheduledCloudSave();
+
+        if (needsRerender) {
+          filterAndRenderSubjects();
+          updateTimetableAndStats();
+          renderPensumChecklist();
+          showToast('Datos sincronizados con la nube ☁️', 'success');
+        } else {
+          setSyncStatus('synced');
         }
-        if (data.parsedClasses && Array.isArray(data.parsedClasses) && data.parsedClasses.length > 0) {
-          parsedClasses = data.parsedClasses;
-        }
-        if (data.enrolledClasses) enrolledClasses = data.enrolledClasses;
-        if (data.passedSubjects)  passedSubjects  = new Set(data.passedSubjects);
-        if (data.toggleHabilitadas !== undefined) {
-          const tog = document.getElementById('toggle-habilitadas');
-          if (tog) tog.checked = data.toggleHabilitadas;
-        }
-        // Mirror to localStorage for offline fallback
-        try {
-          localStorage.setItem('enrolledClasses', JSON.stringify(enrolledClasses));
-          localStorage.setItem('passedSubjects',  JSON.stringify(Array.from(passedSubjects)));
-          localStorage.setItem('curriculum',      JSON.stringify(CURRICULUM));
-          localStorage.setItem('parsedClasses',   JSON.stringify(parsedClasses));
-          if (data.savedAt) localStorage.setItem('savedAt', data.savedAt);
-        } catch(_){}
-        setSyncStatus('synced');
-        return true;
+
       } catch (e) {
-        console.warn('MecaPlan: Cloud load failed, falling back to localStorage:', e);
+        console.warn('MecaPlan: syncWithCloud error:', e);
         setSyncStatus('error');
-        return false;
+      } finally {
+        _isSyncingFromCloud = false;
       }
+    }
+
+    function _applyCloudCurriculum(cloud) {
+      // Solo actualizar CURRICULUM y parsedClasses si la nube los trae Y son más ricos
+      if (cloud.curriculum && Array.isArray(cloud.curriculum) && cloud.curriculum.length >= CURRICULUM.length) {
+        CURRICULUM.length = 0;
+        CURRICULUM.push(...cloud.curriculum);
+      }
+      if (cloud.parsedClasses && Array.isArray(cloud.parsedClasses) && cloud.parsedClasses.length >= parsedClasses.length) {
+        parsedClasses = cloud.parsedClasses;
+      }
+    }
+
+    function _mirrorToLocalStorage(savedAt) {
+      try {
+        localStorage.setItem('enrolledClasses', JSON.stringify(enrolledClasses));
+        localStorage.setItem('passedSubjects',  JSON.stringify(Array.from(passedSubjects)));
+        localStorage.setItem('curriculum',      JSON.stringify(CURRICULUM));
+        localStorage.setItem('parsedClasses',   JSON.stringify(parsedClasses));
+        if (savedAt) localStorage.setItem('savedAt', savedAt);
+      } catch(_) {}
+    }
+
+    function _scheduledCloudSave() {
+      // Construir payload y guardar
+      const tog = document.getElementById('toggle-habilitadas');
+      const payload = {
+        enrolledClasses,
+        passedSubjects:  Array.from(passedSubjects),
+        curriculum:      CURRICULUM,
+        parsedClasses,
+        toggleHabilitadas: tog ? tog.checked : false,
+        savedAt: new Date().toISOString()
+      };
+      saveToCloud(payload);
     }
 
     /* ----------------------------------------------------
        STATE PERSISTENCE (LocalStorage + Cloud)
        ---------------------------------------------------- */
     function saveState() {
-      if (isLoadingState) return; // Prevent overwriting during initial sync/load
+      if (_isSyncingFromCloud) return; // No guardar mientras se sincroniza
 
       const savedAt = new Date().toISOString();
 
-      // 1. Always save locally for offline fallback
+      // 1. Guardar localmente SIEMPRE (rápido, offline-first)
       try {
         localStorage.setItem('enrolledClasses', JSON.stringify(enrolledClasses));
         localStorage.setItem('passedSubjects',  JSON.stringify(Array.from(passedSubjects)));
         localStorage.setItem('curriculum',      JSON.stringify(CURRICULUM));
         localStorage.setItem('parsedClasses',   JSON.stringify(parsedClasses));
-        const toggleState = document.getElementById('toggle-habilitadas') ? document.getElementById('toggle-habilitadas').checked : false;
-        localStorage.setItem('toggleHabilitadas', toggleState);
+        const tog = document.getElementById('toggle-habilitadas');
+        localStorage.setItem('toggleHabilitadas', tog ? tog.checked : false);
         localStorage.setItem('savedAt', savedAt);
       } catch (e) {
         console.warn('MecaPlan: localStorage save failed:', e);
       }
-      // 2. Debounced cloud save (waits 2s after last change to batch writes)
+
+      // 2. Debounce: esperar 2s sin cambios para subir a la nube
       clearTimeout(_cloudSaveTimer);
-      _cloudSaveTimer = setTimeout(saveToCloud, 2000);
+      _cloudSaveTimer = setTimeout(_scheduledCloudSave, 2000);
     }
 
     function loadState() {
-      // Load from localStorage synchronously so UI renders immediately
+      // 1. Cargar localStorage SINCRÓNICAMENTE para que la UI aparezca de inmediato
       try {
         const savedEnrolled      = localStorage.getItem('enrolledClasses');
         const savedPassed        = localStorage.getItem('passedSubjects');
@@ -2942,31 +2519,23 @@ Electiva,Inteligencia Emocional,6147,,,18..20,,,,,Presencial`;
         const savedCurriculum    = localStorage.getItem('curriculum');
         const savedParsedClasses = localStorage.getItem('parsedClasses');
 
-        if (savedCurriculum)    { const p = JSON.parse(savedCurriculum);    CURRICULUM.length = 0; CURRICULUM.push(...p); }
-        if (savedParsedClasses) { parsedClasses   = JSON.parse(savedParsedClasses); }
+        if (savedCurriculum)    { const p = JSON.parse(savedCurriculum); if (p && p.length >= CURRICULUM.length) { CURRICULUM.length = 0; CURRICULUM.push(...p); } }
+        if (savedParsedClasses) { const p = JSON.parse(savedParsedClasses); if (p && p.length >= parsedClasses.length) parsedClasses = p; }
         if (savedEnrolled)      { enrolledClasses = JSON.parse(savedEnrolled) || {}; }
         if (savedPassed)        { passedSubjects  = new Set(Array.isArray(JSON.parse(savedPassed)) ? JSON.parse(savedPassed) : []); }
-        if (savedToggle !== null) { const tog = document.getElementById('toggle-habilitadas'); if (tog) tog.checked = (savedToggle === 'true'); }
+        if (savedToggle !== null) {
+          const tog = document.getElementById('toggle-habilitadas');
+          if (tog) tog.checked = (savedToggle === 'true');
+        }
       } catch (e) {
-        console.error('Error loading from localStorage:', e);
+        console.error('MecaPlan: Error cargando localStorage:', e);
         enrolledClasses = {};
         passedSubjects  = new Set();
       }
 
-      isLoadingState = true;
-
-      // Then async-load from cloud and re-render if newer data is found
-      loadFromCloud().then(cloudLoaded => {
-        isLoadingState = false; // Initial load finished
-        if (cloudLoaded) {
-          filterAndRenderSubjects();
-          updateTimetableAndStats();
-          showToast('Datos cargados desde la nube ☁️', 'success');
-        }
-      }).catch(err => {
-        console.error('MecaPlan: Cloud load error:', err);
-        isLoadingState = false;
-      });
+      // 2. Async: sincronizar con la nube en segundo plano
+      //    La UI ya está lista; si hay datos nuevos en la nube se re-renderiza
+      setTimeout(syncWithCloud, 800);
     }
 
     /* ----------------------------------------------------
@@ -2980,8 +2549,6 @@ Electiva,Inteligencia Emocional,6147,,,18..20,,,,,Presencial`;
       const corner = document.createElement("div");
       corner.className = "grid-cell grid-header";
       corner.innerText = "Hora";
-      corner.style.gridColumn = "1";
-      corner.style.gridRow = "1";
       grid.appendChild(corner);
 
       // Render Day Headers
@@ -2993,8 +2560,6 @@ Electiva,Inteligencia Emocional,6147,,,18..20,,,,,Presencial`;
         const header = document.createElement("div");
         header.className = `grid-cell grid-header ${idx === currentDay ? 'active-day' : ''}`;
         header.innerText = day;
-        header.style.gridColumn = String(idx + 2);
-        header.style.gridRow = "1";
         grid.appendChild(header);
       });
 
@@ -3005,8 +2570,6 @@ Electiva,Inteligencia Emocional,6147,,,18..20,,,,,Presencial`;
         const timeLabel = document.createElement("div");
         timeLabel.className = "grid-cell grid-time-label";
         timeLabel.innerHTML = `<span>${formatHour(hour)}</span><span style="font-size:8px;opacity:0.6;margin-top:2px;">${formatHour(hour+1)}</span>`;
-        timeLabel.style.gridColumn = "1";
-        timeLabel.style.gridRow = String(hour - 5 + 2);
         grid.appendChild(timeLabel);
 
         // Day slots
@@ -3015,8 +2578,6 @@ Electiva,Inteligencia Emocional,6147,,,18..20,,,,,Presencial`;
           slot.className = "grid-cell grid-slot";
           slot.dataset.hour = hour;
           slot.dataset.day = day;
-          slot.style.gridColumn = String(day + 2);
-          slot.style.gridRow = String(hour - 5 + 2);
           grid.appendChild(slot);
         }
       }
@@ -3162,6 +2723,7 @@ Electiva,Inteligencia Emocional,6147,,,18..20,,,,,Presencial`;
       } else {
         toggleHabilitadas.checked = false;
       }
+      saveState();
 
       const container = document.getElementById("subject-list-container");
       container.innerHTML = "";
@@ -3174,7 +2736,8 @@ Electiva,Inteligencia Emocional,6147,,,18..20,,,,,Presencial`;
         // 2. Semester filter / Habilitadas filter
         let matchesSemester = true;
         if (semesterSelectValue === "Habilitadas") {
-          matchesSemester = !passedSubjects.has(subject.name);
+          // Mostrar solo habilitadas y que NO estén ya aprobadas
+          matchesSemester = HABILITADAS_NAMES.includes(subject.name) && !passedSubjects.has(subject.name);
         } else if (semesterSelectValue !== "All") {
           if (semesterSelectValue === "Electiva") {
             matchesSemester = subject.isElectiveRequirement || subject.sem === "Electiva";
@@ -3745,8 +3308,6 @@ Electiva,Inteligencia Emocional,6147,,,18..20,,,,,Presencial`;
 
       // Render modality analysis list
       renderModalityStats();
-      // Update print-friendly subjects list
-      updatePrintSubjectsList();
     }
 
     function renderModalityStats() {
@@ -3815,594 +3376,6 @@ Electiva,Inteligencia Emocional,6147,,,18..20,,,,,Presencial`;
     }
 
     /* ----------------------------------------------------
-       PRINT SUBJECTS LIST FOR PDF EXPORT
-       ---------------------------------------------------- */
-    function updatePrintSubjectsList() {
-      const tbody = document.getElementById("print-subjects-tbody");
-      const totalLabel = document.getElementById("print-total-credits");
-      if (!tbody) return;
-
-      tbody.innerHTML = "";
-      let totalCredits = 0;
-      
-      const enrolledKeys = Object.keys(enrolledClasses);
-      if (enrolledKeys.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 12px; color: #666; border: 1.5px solid #000;">No hay materias inscritas.</td></tr>`;
-        if (totalLabel) totalLabel.innerText = "Total Créditos Inscritos: 0 cr";
-        return;
-      }
-
-      enrolledKeys.forEach(reqName => {
-        const item = enrolledClasses[reqName];
-        if (!item) return;
-        
-        totalCredits += item.credits || 0;
-        
-        // Format schedule text
-        let scheduleText = "";
-        if (item.modalidad && item.modalidad.toLowerCase() === "virtual") {
-          scheduleText = "Virtual / Asíncrona";
-        } else {
-          const daysSpanish = { Lun: "Lunes", Mar: "Martes", Mie: "Miércoles", Jue: "Jueves", Vie: "Viernes", Sab: "Sábado", Dom: "Domingo" };
-          const list = [];
-          Object.keys(item.horarios || {}).forEach(day => {
-            (item.horarios[day] || []).forEach(slot => {
-              list.push(`${daysSpanish[day]} ${formatHour(slot.start)} - ${formatHour(slot.end)}`);
-            });
-          });
-          scheduleText = list.length > 0 ? list.join(", ") : "Sin horario registrado";
-        }
-
-        const tr = document.createElement("tr");
-        tr.style.borderBottom = "1.5px solid #000";
-        tr.innerHTML = `
-          <td style="padding: 8px; border: 1.5px solid #000; font-weight: bold; color: #000;">${item.requirementName || reqName}</td>
-          <td style="padding: 8px; border: 1.5px solid #000; font-family: monospace; color: #000;">${item.nClase || 'N/A'}</td>
-          <td style="padding: 8px; border: 1.5px solid #000; color: #000;">${item.modalidad}</td>
-          <td style="padding: 8px; border: 1.5px solid #000; color: #000;">${scheduleText}</td>
-          <td style="padding: 8px; border: 1.5px solid #000; text-align: center; font-weight: bold; color: #000;">${item.credits || 0}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-
-      if (totalLabel) {
-        totalLabel.innerText = `Total Créditos Inscritos: ${totalCredits} cr`;
-      }
-    }
-
-    /* ----------------------------------------------------
-       MANAGE SUBJECTS & SCHEDULES (CRUD LOGIC)
-       ---------------------------------------------------- */
-    let currentEditingGroups = [];
-
-    function closeManageSubjectsModal() {
-      const modal = document.getElementById("manage-subjects-modal");
-      modal.classList.remove("active");
-      cancelSubjectEdit();
-    }
-
-    function cancelSubjectEdit() {
-      document.getElementById("subject-edit-form-container").style.display = "none";
-      document.getElementById("edit-subject-index").value = "";
-      document.getElementById("edit-subject-original-name").value = "";
-      currentEditingGroups = [];
-    }
-
-    function renderManageSubjectsTable() {
-      const tbody = document.getElementById("manage-subjects-tbody");
-      if (!tbody) return;
-      tbody.innerHTML = "";
-      
-      const query = document.getElementById("manage-search-bar").value.toLowerCase().trim();
-      
-      const filtered = CURRICULUM.filter(s => s.name.toLowerCase().includes(query));
-      
-      if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 20px; color: var(--text-muted);">No se encontraron materias.</td></tr>`;
-        return;
-      }
-
-      // Sort by Semester then Name
-      filtered.sort((a, b) => {
-        if (a.sem !== b.sem) {
-          if (a.sem === "Electiva") return 1;
-          if (b.sem === "Electiva") return -1;
-          return parseInt(a.sem) - parseInt(b.sem);
-        }
-        return a.name.localeCompare(b.name);
-      });
-
-      filtered.forEach(subject => {
-        const targetName = subject.csvMapName || subject.name;
-        const groupsCount = parsedClasses.filter(c => c.curso.toLowerCase() === targetName.toLowerCase() || (subject.isElectiveRequirement && c.semestre.toLowerCase() === "electiva" && (ELECTIVES_CLASSIFICATION[subject.name] || []).includes(c.curso))).length;
-
-        const tr = document.createElement("tr");
-        tr.style.borderBottom = "1px solid var(--border-color)";
-        
-        tr.innerHTML = `
-          <td style="padding: 8px; font-weight: 600; color: var(--text-primary);">${subject.name}</td>
-          <td style="padding: 8px; color: var(--text-secondary);">${subject.sem}</td>
-          <td style="padding: 8px; color: var(--text-secondary);">${subject.credits}</td>
-          <td style="padding: 8px; color: var(--text-secondary);">${groupsCount} grupo(s)</td>
-          <td style="padding: 8px; text-align: right;">
-            <button class="btn-secondary" style="padding: 3px 6px; font-size: 11px;" onclick="editSubjectInManage('${subject.name.replace(/'/g, "\\'")}')">Editar</button>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    function editSubjectInManage(originalName) {
-      const subjectIndex = CURRICULUM.findIndex(s => s.name === originalName);
-      if (subjectIndex === -1) return;
-
-      const subject = CURRICULUM[subjectIndex];
-      
-      document.getElementById("edit-subject-index").value = subjectIndex;
-      document.getElementById("edit-subject-original-name").value = subject.name;
-      document.getElementById("edit-subject-name").value = subject.name;
-      document.getElementById("edit-subject-credits").value = subject.credits;
-      document.getElementById("edit-subject-sem").value = subject.sem;
-      
-      document.getElementById("edit-form-title").innerText = `Editar Materia: ${subject.name}`;
-
-      // Wire delete button directly with closure — avoids any onclick attribute / hidden field issues
-      const btnDel = document.getElementById("btn-delete-subject");
-      btnDel.style.display = "inline-block";
-      // Replace button with a clone to remove any stale listeners, then add fresh one
-      const btnDelClone = btnDel.cloneNode(true);
-      btnDel.parentNode.replaceChild(btnDelClone, btnDel);
-      btnDelClone.onclick = function() {
-        // Use inline 2-click confirmation (browser suppresses native dialogs on file:// pages)
-        if (!btnDelClone._confirmPending) {
-          // First click: enter confirmation mode
-          btnDelClone._confirmPending = true;
-          const origText = btnDelClone.textContent;
-          const origBg = btnDelClone.style.background;
-          btnDelClone.textContent = '⚠️ Confirmar eliminación';
-          btnDelClone.style.background = '#dc2626';
-          btnDelClone.style.animation = 'pulse 0.8s infinite';
-
-          // Auto-reset after 4 seconds
-          btnDelClone._confirmTimer = setTimeout(function() {
-            btnDelClone._confirmPending = false;
-            btnDelClone.textContent = 'Eliminar Materia';
-            btnDelClone.style.background = origBg;
-            btnDelClone.style.animation = '';
-          }, 4000);
-        } else {
-          // Second click: perform deletion
-          clearTimeout(btnDelClone._confirmTimer);
-          btnDelClone._confirmPending = false;
-          btnDelClone.style.animation = '';
-
-          const subjectName = originalName;
-          const idx = CURRICULUM.findIndex(s => s.name === subjectName);
-          if (idx === -1) {
-            btnDelClone.textContent = 'Materia no encontrada';
-            return;
-          }
-          const subj = CURRICULUM[idx];
-          if (enrolledClasses[subj.name]) delete enrolledClasses[subj.name];
-          passedSubjects.delete(subj.name);
-          CURRICULUM.splice(idx, 1);
-          const tgt = (subj.csvMapName || subj.name).toLowerCase();
-          parsedClasses = parsedClasses.filter(c => c.curso.toLowerCase() !== tgt);
-          saveState();
-          cancelSubjectEdit();
-          renderManageSubjectsTable();
-          renderPensumChecklist();
-          filterAndRenderSubjects();
-          updateTimetableAndStats();
-          showToast('Materia "' + subj.name + '" eliminada.', 'warning');
-        }
-      };
-      // Store handler reference for bridge access
-      btnDelClone._deleteHandler = btnDelClone.onclick;
-
-      const targetName = subject.csvMapName || subject.name;
-      const groups = parsedClasses.filter(c => c.curso.toLowerCase() === targetName.toLowerCase() || (subject.isElectiveRequirement && c.semestre.toLowerCase() === "electiva" && (ELECTIVES_CLASSIFICATION[subject.name] || []).includes(c.curso)));
-      
-      currentEditingGroups = JSON.parse(JSON.stringify(groups));
-      
-      renderEditGroupsList(currentEditingGroups);
-      
-      document.getElementById("subject-edit-form-container").style.display = "flex";
-      // Scroll to form
-      document.getElementById("subject-edit-form-container").scrollIntoView({ behavior: 'smooth' });
-    }
-
-    function showCreateSubjectForm() {
-      document.getElementById("edit-subject-index").value = "-1";
-      document.getElementById("edit-subject-original-name").value = "";
-      document.getElementById("edit-subject-name").value = "";
-      document.getElementById("edit-subject-credits").value = "3";
-      document.getElementById("edit-subject-sem").value = "1";
-      
-      document.getElementById("edit-form-title").innerText = "Crear Nueva Materia";
-      document.getElementById("btn-delete-subject").style.display = "none";
-      
-      currentEditingGroups = [];
-      renderEditGroupsList(currentEditingGroups);
-      
-      document.getElementById("subject-edit-form-container").style.display = "flex";
-      // Scroll to form
-      document.getElementById("subject-edit-form-container").scrollIntoView({ behavior: 'smooth' });
-    }
-
-    function renderEditGroupsList(groups) {
-      const container = document.getElementById("edit-groups-list");
-      if (!container) return;
-      container.innerHTML = "";
-
-      if (groups.length === 0) {
-        container.innerHTML = `
-          <div style="font-size: 11px; color: var(--text-muted); text-align: center; padding: 10px; border: 1px dashed var(--border-color); border-radius: 4px; grid-column: 1/-1;">
-            No hay grupos creados para esta materia. Haz clic en "Agregar Grupo" para crear uno.
-          </div>
-        `;
-        return;
-      }
-
-      groups.forEach((group, gIdx) => {
-        const groupCard = document.createElement("div");
-        groupCard.className = "group-edit-card";
-        
-        const headerRow = document.createElement("div");
-        headerRow.style = "display: grid; grid-template-columns: 1fr 1.2fr auto; gap: 8px; align-items: center;";
-        
-        const classNumContainer = document.createElement("div");
-        classNumContainer.style = "display: flex; flex-direction: column; gap: 2px;";
-        
-        const nClaseInput = document.createElement("input");
-        nClaseInput.type = "text";
-        nClaseInput.className = "search-input";
-        nClaseInput.style = "padding: 5px 8px; font-size: 12px; margin: 0;";
-        nClaseInput.value = group.nClase || "";
-        nClaseInput.placeholder = "Código clase";
-        nClaseInput.oninput = (e) => {
-          group.nClase = e.target.value;
-        };
-        
-        classNumContainer.innerHTML = `<span style="font-size: 9px; color: var(--text-muted); font-weight: 500;">Nº Clase / Código</span>`;
-        classNumContainer.appendChild(nClaseInput);
-        
-        const modalityContainer = document.createElement("div");
-        modalityContainer.style = "display: flex; flex-direction: column; gap: 2px;";
-        
-        const selectMod = document.createElement("select");
-        selectMod.className = "select-dropdown";
-        selectMod.style = "padding: 5px 8px; font-size: 12px; height: 32px;";
-        const modalities = ["Presencial", "Virtual", "Mixto", "Mediada"];
-        modalities.forEach(m => {
-          const opt = document.createElement("option");
-          opt.value = m;
-          opt.text = m;
-          if (m.toLowerCase() === (group.modalidad || "Presencial").toLowerCase()) opt.selected = true;
-          selectMod.appendChild(opt);
-        });
-        selectMod.onchange = (e) => {
-          group.modalidad = e.target.value;
-        };
-        
-        modalityContainer.innerHTML = `<span style="font-size: 9px; color: var(--text-muted); font-weight: 500;">Modalidad</span>`;
-        modalityContainer.appendChild(selectMod);
-
-        const deleteBtn = document.createElement("button");
-        deleteBtn.className = "btn-danger";
-        deleteBtn.style = "padding: 4px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; height: 30px; width: 30px; margin-top: 13px; cursor: pointer;";
-        deleteBtn.innerHTML = `
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
-        `;
-        deleteBtn.type = "button";
-        deleteBtn.title = "Eliminar Grupo";
-        deleteBtn.onclick = () => {
-          groups.splice(gIdx, 1);
-          renderEditGroupsList(groups);
-        };
-
-        headerRow.appendChild(classNumContainer);
-        headerRow.appendChild(modalityContainer);
-        headerRow.appendChild(deleteBtn);
-        groupCard.appendChild(headerRow);
-
-        // Group Schedules list
-        const schedulesContainer = document.createElement("div");
-        schedulesContainer.style = "display: flex; flex-direction: column; gap: 6px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 8px; margin-top: 4px;";
-        
-        const sHeader = document.createElement("div");
-        sHeader.style = "display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;";
-        sHeader.innerHTML = `
-          <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Bloques Horarios</span>
-        `;
-        
-        const addSlotBtn = document.createElement("button");
-        addSlotBtn.className = "btn-secondary";
-        addSlotBtn.style = "padding: 2px 6px; font-size: 9px; cursor: pointer;";
-        addSlotBtn.type = "button";
-        addSlotBtn.innerText = "➕ Añadir Bloque";
-        addSlotBtn.onclick = () => addSlotToGroup(gIdx);
-        sHeader.appendChild(addSlotBtn);
-        schedulesContainer.appendChild(sHeader);
-
-        const slotsList = document.createElement("div");
-        slotsList.className = "group-slots-list";
-
-        const slots = [];
-        const daysKeys = ["Lun", "Mar", "Mie", "Jue", "Vie", "Sab", "Dom"];
-        daysKeys.forEach(day => {
-          const daySlots = group.horarios[day] || [];
-          daySlots.forEach(s => {
-            slots.push({ day: day, start: s.start, end: s.end });
-          });
-        });
-
-        if (slots.length === 0) {
-          slotsList.innerHTML = `<span class="no-slots-label" style="font-size: 10px; color: var(--text-muted); font-style: italic; display: block; padding: 4px 0;">Sin bloques de horario (típico de virtual).</span>`;
-        } else {
-          slots.forEach((slot, sIdx) => {
-            const slotRow = document.createElement("div");
-            slotRow.style = "display: grid; grid-template-columns: 1.2fr 1fr 1fr auto; gap: 6px; align-items: center; margin-bottom: 4px;";
-            
-            // Day select
-            const selectDay = document.createElement("select");
-            selectDay.className = "select-dropdown";
-            selectDay.style = "padding: 3px 6px; font-size: 11px; height: 26px;";
-            const daysMap = { Lun: "Lun", Mar: "Mar", Mie: "Mié", Jue: "Jue", Vie: "Vie", Sab: "Sáb", Dom: "Dom" };
-            Object.keys(daysMap).forEach(dk => {
-              const opt = document.createElement("option");
-              opt.value = dk;
-              opt.text = daysMap[dk];
-              if (dk === slot.day) opt.selected = true;
-              selectDay.appendChild(opt);
-            });
-
-            // Start hour select
-            const selectStart = document.createElement("select");
-            selectStart.className = "select-dropdown";
-            selectStart.style = "padding: 3px 6px; font-size: 11px; height: 26px;";
-            
-            // End hour select
-            const selectEnd = document.createElement("select");
-            selectEnd.className = "select-dropdown";
-            selectEnd.style = "padding: 3px 6px; font-size: 11px; height: 26px;";
-
-            for (let h = 5; h <= 22; h++) {
-              const optStart = document.createElement("option");
-              optStart.value = h;
-              optStart.text = formatHour(h);
-              if (h === slot.start) optStart.selected = true;
-              selectStart.appendChild(optStart);
-
-              const optEnd = document.createElement("option");
-              optEnd.value = h;
-              optEnd.text = formatHour(h);
-              if (h === slot.end) optEnd.selected = true;
-              selectEnd.appendChild(optEnd);
-            }
-
-            const deleteSlotBtn = document.createElement("button");
-            deleteSlotBtn.className = "btn-secondary";
-            deleteSlotBtn.style = "padding: 3px; border-radius: 4px; display: flex; align-items: center; justify-content: center; height: 24px; width: 24px; cursor: pointer;";
-            deleteSlotBtn.type = "button";
-            deleteSlotBtn.innerHTML = `
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-              </svg>
-            `;
-            deleteSlotBtn.onclick = () => {
-              slots.splice(sIdx, 1);
-              // Save slots array back into group.horarios mapping
-              group.horarios = {};
-              slots.forEach(s => {
-                if (!group.horarios[s.day]) group.horarios[s.day] = [];
-                group.horarios[s.day].push({ start: s.start, end: s.end });
-              });
-              renderEditGroupsList(groups);
-            };
-
-            const updateSlotValues = () => {
-              slot.day = selectDay.value;
-              slot.start = parseInt(selectStart.value);
-              slot.end = parseInt(selectEnd.value);
-              
-              // Validate start < end, if not show warning or adjust
-              if (slot.start >= slot.end) {
-                slot.end = slot.start + 1;
-                selectEnd.value = slot.end;
-              }
-              
-              group.horarios = {};
-              slots.forEach(s => {
-                if (!group.horarios[s.day]) group.horarios[s.day] = [];
-                group.horarios[s.day].push({ start: s.start, end: s.end });
-              });
-            };
-
-            selectDay.onchange = updateSlotValues;
-            selectStart.onchange = updateSlotValues;
-            selectEnd.onchange = updateSlotValues;
-
-            slotRow.appendChild(selectDay);
-            slotRow.appendChild(selectStart);
-            slotRow.appendChild(selectEnd);
-            slotRow.appendChild(deleteSlotBtn);
-            slotsList.appendChild(slotRow);
-          });
-        }
-
-        schedulesContainer.appendChild(slotsList);
-        groupCard.appendChild(schedulesContainer);
-        container.appendChild(groupCard);
-      });
-    }
-
-    function addSlotToGroup(gIdx) {
-      const group = currentEditingGroups[gIdx];
-      if (!group) return;
-      
-      // Default to Lunes 08:00 - 10:00
-      if (!group.horarios.Lun) group.horarios.Lun = [];
-      group.horarios.Lun.push({ start: 8, end: 10 });
-      
-      renderEditGroupsList(currentEditingGroups);
-    }
-
-    function addEditGroupRow() {
-      const name = document.getElementById("edit-subject-name").value.trim() || "Nueva Materia";
-      const sem = document.getElementById("edit-subject-sem").value;
-      
-      currentEditingGroups.push({
-        semestre: sem,
-        curso: name,
-        nClase: String(Math.floor(1000 + Math.random() * 9000)),
-        horarios: {},
-        modalidad: "Presencial"
-      });
-      
-      renderEditGroupsList(currentEditingGroups);
-    }
-
-    function deleteSubjectFromManage() {
-      // Use the stored original name as primary key (more reliable than array index)
-      const originalName = document.getElementById("edit-subject-original-name").value;
-      
-      if (!originalName) {
-        alert("No se puede determinar qué materia eliminar. Por favor, abre el formulario de edición de la materia primero.");
-        return;
-      }
-
-      // Find the subject by name (fresh lookup, avoids index drift)
-      const subjectIndex = CURRICULUM.findIndex(s => s.name === originalName);
-      if (subjectIndex === -1) {
-        alert(`No se encontró la materia "${originalName}" en el plan de estudios.`);
-        return;
-      }
-
-      const subject = CURRICULUM[subjectIndex];
-
-      if (confirm(`¿Estás seguro de que quieres eliminar la materia "${subject.name}"?\n\nEsto también eliminará todos sus grupos/horarios y la removerá de tu horario.`)) {
-        // Remove from enrolled schedule if present
-        if (enrolledClasses[subject.name]) {
-          delete enrolledClasses[subject.name];
-        }
-
-        // Remove from passed subjects checklist
-        passedSubjects.delete(subject.name);
-
-        // Remove from CURRICULUM array
-        CURRICULUM.splice(subjectIndex, 1);
-
-        // Remove associated classes from parsedClasses
-        const targetName = (subject.csvMapName || subject.name).toLowerCase();
-        parsedClasses = parsedClasses.filter(c => c.curso.toLowerCase() !== targetName);
-
-        saveState();
-        cancelSubjectEdit();
-
-        renderManageSubjectsTable();
-        renderPensumChecklist();
-        filterAndRenderSubjects();
-        updateTimetableAndStats();
-
-        showToast(`Materia "${subject.name}" eliminada.`, "warning");
-      }
-    }
-
-    function saveSubjectFromForm() {
-      const index = parseInt(document.getElementById("edit-subject-index").value);
-      const originalName = document.getElementById("edit-subject-original-name").value;
-      const name = document.getElementById("edit-subject-name").value.trim();
-      const credits = parseInt(document.getElementById("edit-subject-credits").value);
-      const sem = document.getElementById("edit-subject-sem").value;
-
-      if (!name) {
-        alert("Por favor ingresa el nombre de la materia.");
-        return;
-      }
-      if (isNaN(credits) || credits <= 0) {
-        alert("Por favor ingresa un número de créditos válido.");
-        return;
-      }
-
-      const newSubject = {
-        name: name,
-        credits: credits,
-        sem: sem === "Electiva" ? "Electiva" : parseInt(sem) || sem
-      };
-
-      if (index === -1) {
-        // Create new subject
-        if (CURRICULUM.some(s => s.name.toLowerCase() === name.toLowerCase())) {
-          alert("Ya existe una materia con este nombre.");
-          return;
-        }
-        CURRICULUM.push(newSubject);
-      } else {
-        // Edit existing subject
-        const oldSubject = CURRICULUM[index];
-        
-        // Update enrolled references if name changed
-        if (oldSubject.name !== name) {
-          if (enrolledClasses[oldSubject.name]) {
-            enrolledClasses[name] = enrolledClasses[oldSubject.name];
-            enrolledClasses[name].requirementName = name;
-            enrolledClasses[name].curso = name;
-            enrolledClasses[name].credits = credits;
-            delete enrolledClasses[oldSubject.name];
-          }
-          if (passedSubjects.has(oldSubject.name)) {
-            passedSubjects.delete(oldSubject.name);
-            passedSubjects.add(name);
-          }
-        }
-        CURRICULUM[index] = newSubject;
-      }
-
-      // Update parsedClasses
-      const targetOldName = originalName || name;
-      parsedClasses = parsedClasses.filter(c => c.curso.toLowerCase() !== targetOldName.toLowerCase());
-
-      // Save groups back
-      currentEditingGroups.forEach(group => {
-        group.curso = name;
-        group.semestre = sem;
-        parsedClasses.push(group);
-      });
-
-      // Update enrolled classes with edited group details (if group code still exists, update schedule/modality)
-      const enrolledKeys = Object.keys(enrolledClasses);
-      enrolledKeys.forEach(key => {
-        const item = enrolledClasses[key];
-        if (key === name || key === originalName) {
-          // Find matching group in currentEditingGroups
-          const matchingGroup = currentEditingGroups.find(cg => cg.nClase === item.nClase);
-          if (matchingGroup) {
-            item.horarios = matchingGroup.horarios;
-            item.modalidad = matchingGroup.modalidad;
-          } else {
-            // Group was deleted, so unenroll
-            delete enrolledClasses[key];
-          }
-        }
-      });
-
-      saveState();
-      cancelSubjectEdit();
-      
-      renderManageSubjectsTable();
-      renderPensumChecklist();
-      filterAndRenderSubjects();
-      updateTimetableAndStats();
-      
-      showToast(`Materia "${name}" guardada con éxito.`, "success");
-    }
-
-    /* ----------------------------------------------------
        TOAST NOTIFICATION COMPONENT
        ---------------------------------------------------- */
     function showToast(message, type = "success") {
@@ -4451,23 +3424,6 @@ Electiva,Inteligencia Emocional,6147,,,18..20,,,,,Presencial`;
         toast.classList.remove("active");
         setTimeout(() => toast.remove(), 300);
       }, 3500);
-    }
-
-    /* Mobile tab switching function */
-    function switchMobileTab(tabId) {
-      document.getElementById('panel-subjects').classList.remove('tab-active');
-      document.getElementById('panel-timetable').classList.remove('tab-active');
-      document.getElementById('panel-progress').classList.remove('tab-active');
-      
-      document.getElementById('panel-' + tabId).classList.add('tab-active');
-      
-      document.querySelectorAll('#mobile-tab-bar .tab-btn').forEach(btn => {
-        if (btn.getAttribute('data-tab') === tabId) {
-          btn.classList.add('active');
-        } else {
-          btn.classList.remove('active');
-        }
-      });
     }
   </script>
 </body>
